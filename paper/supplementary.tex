@@ -18,7 +18,7 @@
 \newcommand{\familyone}{Classical Hall-Petch}
 \newcommand{\familytwo}{Physics-derived descriptors}
 \newcommand{\familythree}{Composition/processing}
-\newcommand{\familyfour}{Non-linear ML (ARMOTE-CV)}
+\newcommand{\familyfour}{Non-linear estimators}
 \newcommand{\familyfive}{Symbolic regression}
 \renewcommand{\thesection}{S\arabic{section}}
 \renewcommand{\thetable}{S\arabic{table}}
@@ -27,9 +27,10 @@
 \setlength{\emergencystretch}{3em}
 
 \title{Supplementary Information for:\\
-\emph{Revisiting Hall--Petch strengthening in FCC multi-principal-element alloys: Best practices for building and auditing machine-learning strength models}}
-\author{Mrinalini~Mulukutla$^{1,*}$, Shakti~Prasad~Padhy$^{2}$, Douglas~Allaire$^{2}$,\\
-Ibrahim~Karaman$^{1}$, Raymundo~Arr\'{o}yave$^{1,2}$\\[0.5em]
+\emph{Revisiting Hall--Petch strengthening in FCC multi-principal element alloys: what grain size, composition, and processing can and cannot explain}}
+\author{Mrinalini~Mulukutla$^{1,*}$, Shakti~Prasad~Padhy$^{1,2}$ \\ 
+Wenle~Xu$^{1}$, Bibhu~Prasad~Sahu$^{1}$, Joydeep~Kundu$^{1}$, Vasanth~C.~Shunmugasamy$^{1}$ \\
+Douglas~Allaire$^{2}$, Ibrahim~Karaman$^{1}$, Raymundo~Arr\'{o}yave$^{1,2}$\\[0.5em]
 \small $^{1}$Department of Materials Science and Engineering, Texas A\&M University,\\
 \small College Station, TX 77843, USA\\
 \small $^{2}$J. Mike Walker '66 Department of Mechanical Engineering, Texas A\&M University,\\
@@ -57,14 +58,7 @@ The broader alloy-discovery effort began with Campaign A, which established the 
 
 The C campaign contributes 59 records from CBA, CBB, and CBC. It used insights from the B campaign to focus on V--Cr--Mn--Fe--Co--Ni alloys and jointly varied composition, cold work, recrystallization temperature, and hold time. During design-space curation, a modified JMAK-type static-recrystallization and grain-growth prior provided grain-size estimates for feasible candidates. The complete C-campaign and grain-growth-model details will be reported separately. The present regression analysis uses measured EBSD grain sizes rather than the design-stage estimates.
 
-Both campaigns followed the same high-level route of vacuum-arc melting from high-purity elements, homogenization, cold rolling, recrystallization, and quenching. EDS and XRD checked realized chemistry and phase constitution; SEM and EBSD documented the microstructure; and quasistatic tensile and Vickers indentation measurements supplied YS and HV. Figure~2 of the main paper shows representative chemistry and microstructure verification. Figure~\ref{fig:provenance} shows the non-uniform composition and processing coverage that motivates grouped validation.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.96\textwidth]{fig_provenance.png}
-  \caption{Composition and processing coverage by batch. The B campaign uses one fixed processing condition, while the C campaign spans a processing grid. The coverage follows the experimental design and is not a random sample of the composition simplex.}
-  \label{fig:provenance}
-\end{figure}
+Both campaigns followed the same high-level route of vacuum-arc melting from high-purity elements, homogenization, cold rolling, recrystallization, and quenching. EDS and XRD checked realized chemistry and phase constitution; SEM and EBSD documented the microstructure; and quasistatic tensile and Vickers indentation measurements supplied YS and HV. Figure~2 of the main paper shows representative chemistry and microstructure verification. The main paper shows the non-uniform composition and processing coverage that motivates grouped validation.
 
 \subsection{Audited record structure and distributions}
 
@@ -159,7 +153,7 @@ Similarly, $1-\langle\mathrm{SD}_{YS}^2\rangle/\mathrm{Var}(YS)\approx0.97$ is n
 
 \subsection{Batch coverage in composition space}
 
-Six principal components are needed to capture approximately 95\% of the composition variance. In the PC1--PC2 projection, the mean pairwise convex-hull overlap is approximately 0.21 (Fig.~\ref{fig:hulls}). This two-dimensional diagnostic does not prove support in the full composition space, but it explains why the LOBO folds differ in difficulty. CBC is relatively isolated, while CBA is well covered by the remaining batches. The aggregate LOBO score therefore combines near-interpolation with genuine extrapolation. It should be read together with the per-batch results in Table~\ref{tab:batch}.
+Six principal components capture 96.9\% of the composition variance. In the PC1--PC2 projection, the mean pairwise convex-hull overlap is approximately 0.21 (Fig.~\ref{fig:hulls}). This two-dimensional diagnostic does not prove support in the full composition space, but it explains why the LOBO folds differ in difficulty. CBC is relatively isolated, while CBA is well covered by the remaining batches. The aggregate LOBO score therefore combines near-interpolation with genuine extrapolation. It should be read together with the per-batch results in Table~\ref{tab:batch}.
 
 \begin{figure}[H]
   \centering
@@ -216,7 +210,7 @@ Dunstan--Bushby $d^{-1}$ & $-520.3$ & 1.8 & 4.3 & 0.000 \\
 \end{tabular}
 \end{table}
 
-The classical YS baseline gives LOO/LOBO $R^2=0.406/0.373$ (Fig.~\ref{fig:scaling}). For HV, the corresponding values are $0.136/-0.077$. Mean grain size is therefore a useful YS baseline within the sampled program, but it does not transfer reliably across batches for HV.
+The classical YS baseline gives LOO/LOBO $R^2=0.406/0.373$ (Fig.~\ref{fig:scaling}). For HV, the corresponding values are $0.136/-0.077$. Mean grain size is therefore a useful YS baseline within the sampled program, but it does not transfer reliably across batches for HV. Table~\ref{tab:hvscaling} repeats the scaling-law comparison for hardness, and Fig.~\ref{fig:scalingfits} shows the corresponding fits.
 
 \begin{figure}[H]
   \centering
@@ -225,12 +219,12 @@ The classical YS baseline gives LOO/LOBO $R^2=0.406/0.373$ (Fig.~\ref{fig:scalin
   \label{fig:scaling}
 \end{figure}
 
-The Bayesian comparison is summarized in Table~\ref{tab:bayesian}, with the fitted laws in Fig.~\ref{fig:scalingfits}, the free-exponent posterior in Fig.~\ref{fig:exponent}, and the model weights in Fig.~\ref{fig:bma}. The Bayesian stacking weight concentrates on the classical form, even though several candidate laws have almost identical expected log predictive density. We therefore do not treat this boundary solution as decisive evidence for one exponent. Parameter counting also differs across the stored tables. Some Bayesian tables include the noise parameter, while the frequentist BIC tables count regression coefficients. The revised manuscript compares models only within internally consistent tables.
+The Bayesian comparison is summarized in Table~\ref{tab:bayesian}, with the YS fits shown in the main paper, the free-exponent posterior in Fig.~\ref{fig:exponent}, and the model weights in Fig.~\ref{fig:bma}. The Bayesian stacking weight concentrates on the classical form, even though several candidate laws have almost identical expected log predictive density. We therefore do not treat this boundary solution as decisive evidence for one exponent. Parameter counting also differs across the stored tables. Some Bayesian tables include the noise parameter, while the frequentist BIC tables count regression coefficients. The revised manuscript compares models only within internally consistent tables.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.64\textwidth]{fig_scaling_fits.png}
-  \caption{Top Family~1 YS scaling laws over the observed grain-size range. Their close overlap shows why the data do not identify a unique exponent.}
+  \includegraphics[width=0.60\textwidth]{fig_scaling_fits_hv.png}
+  \caption{The three best-supported Family~1 grain-size laws fitted to HV over the observed range, with points coloured by batch. The curves overlap as closely as they do for YS, but the CBB batch lies systematically below all of them, consistent with the negative batch-level $R^2$ in Table~\ref{tab:grouped}. The corresponding YS comparison is shown in the main paper.}
   \label{fig:scalingfits}
 \end{figure}
 
@@ -328,7 +322,7 @@ B_i=3\bar\mu\varepsilon_i^{4/3}Z,
 \end{equation}
 with damped modulus and Vegard size misfits~\cite{TodaCaraballo2015}. Pair-specific binary $B_i$ values are not available for the eight-element system, so we use a shared theoretical prefactor.
 
-Table~\ref{tab:hvscaling} repeats the scaling-law comparison for hardness. The Labusch and Toda--Caraballo constants are calibrated once to reproduce \SI{125}{MPa} for CoCrFeMnNi~\cite{Otto2013}. VLC is not calibrated. Table~\ref{tab:sss} separates the calibrated errors from the 2--5$\times$ errors of the uncalibrated variants.
+The Labusch and Toda--Caraballo constants are calibrated once to reproduce \SI{125}{MPa} for CoCrFeMnNi~\cite{Otto2013}. VLC is not calibrated. Table~\ref{tab:sss} separates the calibrated errors from the 2--5$\times$ errors of the uncalibrated variants.
 
 \begin{table}[H]
 \centering
@@ -364,14 +358,7 @@ HP only & --- & --- & --- & --- & 0.406 & 62.5 \\
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:sssbenchmark} lists the benchmark, and Fig.~\ref{fig:sss} shows the parity plots. As standalone LOO predictors, the archived SSS scores are 0.274 for calibrated Labusch, 0.091 for Toda--Caraballo, and 0.030 for VLC. All three are below the Family~1 YS baseline. When raw composition is already included, adding one of these deterministic SSS estimates changes LOO $R^2$ by no more than 0.002. The reported linear partial correlations after removing the composition signal are also below $|r|=0.10$. These results show that the estimates add little information in this dataset. They do not invalidate the underlying theories outside the present input approximations.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.72\textwidth]{fig_sss_parity.png}
-  \caption{Family~2 SSS estimates versus Family~1 Hall--Petch-corrected YS.}
-  \label{fig:sss}
-\end{figure}
+Table~\ref{tab:sssbenchmark} lists the benchmark; the corresponding parity plots are shown in the main paper. As standalone LOO predictors, the archived SSS scores are 0.274 for calibrated Labusch, 0.091 for Toda--Caraballo, and 0.030 for VLC. All three are below the Family~1 YS baseline. When raw composition is already included, adding one of these deterministic SSS estimates changes LOO $R^2$ by no more than 0.002. The reported linear partial correlations after removing the composition signal are also below $|r|=0.10$. These results show that the estimates add little information in this dataset. They do not invalidate the underlying theories outside the present input approximations.
 
 The present data cannot show that the error comes only from the Vegard inputs. Approximated elastic properties, calibration transfer, phase or local-order effects, and the subtraction used to define experimental friction stress can all contribute. DFT-derived misfit volumes improve VLC predictions in selected FCC systems~\cite{Moitzi2022}. Improved inputs are therefore a clear next test, not a proven single explanation.
 
@@ -462,7 +449,7 @@ This work, Family~3 M3 & 766 & shared fitted slope \\
 \end{tabular}
 \end{table}
 
-The grain-only Family~1 slope is approximately 1149~MPa$\cdot\mu$m$^{1/2}$. Adding the composition-dependent intercept in M3 reduces the shared slope to approximately 766~MPa$\cdot\mu$m$^{1/2}$. This change is consistent with composition--grain-size confounding in the global baseline. It does not show that 766 is a universal slope for FCC MPEAs.
+The grain-only Family~1 slope is approximately 1182~MPa$\cdot\mu$m$^{1/2}$. Adding the composition-dependent intercept in M3 reduces the shared slope to approximately 766~MPa$\cdot\mu$m$^{1/2}$. This change is consistent with composition--grain-size confounding in the global baseline. It does not show that 766 is a universal slope for FCC MPEAs.
 
 \begin{table}[H]
 \centering
@@ -542,7 +529,7 @@ An expanded archived search added $x^2$, $\sqrt{x}$, and $x^{-1}$, nine alternat
 
 PySR used three feature pools, renamed P1--P3 here to avoid confusion with the five Family labels. P1 contains $d^{-1/2}$ and $\mathrm{SD}_{\mathrm{grain}}$. P2 adds raw composition and processing. P3 instead adds six Wen descriptors and processing. The archived files call these pools F1--F2. The operator sets were O1 ($+,-$), O2 ($+,-,\times,\div$), and O3 (O2 plus protected square root, logarithm, square, and cube). Each cell used 50--75 search iterations. Equation structures and elbow or accuracy selections were obtained using the complete target dataset.
 
-The full PySR grid is given in Table~\ref{tab:pysrgrid} and its complexity--loss front in Fig.~\ref{fig:pysrpareto}. For CV, the numerical constants in the selected full-data expression were replaced with free parameters and refit in each training fold. This tests a frozen structure after it has been selected; it does not repeat the structure search. The stored LOBO values in Table~\ref{tab:pysr} are averages of per-batch $R^2$. In contrast, the confirmatory values in the main text are pooled $Q^2$. We report the stored values for provenance but do not place them on the same leaderboard.
+The full PySR grid is given in Table~\ref{tab:pysrgrid}; its complexity--loss front is shown in the main paper. For CV, the numerical constants in the selected full-data expression were replaced with free parameters and refit in each training fold. This tests a frozen structure after it has been selected; it does not repeat the structure search. The stored LOBO values in Table~\ref{tab:pysr} are averages of per-batch $R^2$. In contrast, the confirmatory values in the main text are pooled $Q^2$. We report the stored values for provenance but do not place them on the same leaderboard.
 
 \begin{table}[H]
 \centering
@@ -557,6 +544,7 @@ Target & Cell & Const. & LOO $R^2$ & Stored LOBO & BIC & Ext. RMSE & Safe \\
 YS & P1--O1 & 1 & 0.019 & $-0.251$ & 818 & 112 & yes \\
 YS & P1--O2 & 2 & 0.482 & 0.276 & 761 & 168 & yes \\
 YS & P1--O3 & 1 & 0.399 & 0.205 & 773 & 158 & yes \\
+YS & P2--O1 & 1 & 0.035 & $-0.281$ & 817 & 108 & yes \\
 YS & P2--O2 & 2 & 0.605 & 0.475 & 737 & 114 & yes \\
 YS & P2--O3 & 2 & 0.604 & 0.496 & 737 & 108 & yes \\
 YS & P3--O1 & 1 & 0.290 & 0.068 & 788 & 117 & yes \\
@@ -564,9 +552,12 @@ YS & P3--O2 & 2 & 0.632 & 0.500 & 727 & 133 & yes \\
 YS & P3--O3 & 2 & 0.674 & 0.555 & 716 & 128 & yes \\
 \midrule
 HV & P1--O1 & 1 & $-0.018$ & $-4.16$ & 664 & 32 & yes \\
+HV & P1--O2 & 1 & $-0.020$ & $-4.16$ & 664 & 33 & yes \\
 HV & P1--O3 & 3 & 0.579 & $-1.15$ & 587 & 9944 & no \\
+HV & P2--O1 & 1 & $-0.014$ & $-4.15$ & 663 & 32 & yes \\
 HV & P2--O2 & 3 & 0.568 & $-1.23$ & 587 & 97 & yes \\
 HV & P2--O3 & 4 & 0.678 & $-0.48$ & 562 & 17895 & no \\
+HV & P3--O1 & 1 & 0.054 & $-4.62$ & 657 & 37 & yes \\
 HV & P3--O2 & 3 & 0.631 & $-0.87$ & 570 & 75 & yes \\
 HV & P3--O3 & 4 & 0.681 & $-2.79$ & 561 & 51 & yes \\
 \bottomrule
@@ -589,13 +580,6 @@ P3--O3 & elbow & 0.674 & 0.555 & 128.4 & $-0.474$ \\
 \bottomrule
 \end{tabular}
 \end{table}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.68\textwidth]{fig08_pysr_pareto.png}
-  \caption{Archived PySR complexity--accuracy fronts. These descriptive plots show the complete-data search. Choosing an equation from them is part of the post-selection boundary.}
-  \label{fig:pysrpareto}
-\end{figure}
 
 PySR BIC counts the fitted numerical constants but not the many variables, operators, and structures that were attempted. We therefore do not compare it with the BIC of a pre-specified linear model set. During external evaluation, the protected functions are $\sqrt{|x|}$ and $\log(|x|+10^{-12})$. The printed equation must include these protections; otherwise the displayed and evaluated forms are different. Protection keeps a square root real but does not remove a pole when that root is in a denominator. The P3--O3 accuracy equation contains $\mathrm{SD}_{\mathrm{grain}}/\sqrt{|\Delta S_{\mathrm{mix}}-8.2739|}$. The internal minimum $\Delta S_{\mathrm{mix}}=8.3637$ is only 0.0898 above the singular value, so this expression must not be extrapolated without a stated descriptor-domain check.
 
@@ -686,19 +670,12 @@ The archived descriptive regression is
 \begin{equation}
 \log C_{\mathrm{eff}}=1.36+0.10\log d-2.06x_V,
 \end{equation}
-where $d$ is entered in the numerical units used for fitting. This regression describes an association in the present campaigns (Fig.~\ref{fig:hvrank}). It is neither dimensionally invariant nor mechanistically identified. Agreement at the top of the distribution also depends on the threshold. Two of the five hardest records are among the five strongest; the overlap increases to 8/10 and 11/20 for broader thresholds. These results support using HV for ranking only within a narrow composition window with similar processing.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.68\textwidth]{fig_hv_ys_rank.png}
-  \caption{HV rank versus YS rank by batch. Strong ordering within each batch becomes weaker after pooling because composition and processing coverage differ among batches.}
-  \label{fig:hvrank}
-\end{figure}
+where $d$ is entered in the numerical units used for fitting. This regression describes an association in the present campaigns. It is neither dimensionally invariant nor mechanistically identified. Agreement at the top of the distribution also depends on the threshold. Two of the five hardest records are among the five strongest; the overlap increases to 8/10 and 11/20 for broader thresholds. These results support using HV for ranking only within a narrow composition window with similar processing.
 
 \section{Reproducibility across model families}
 \label{si:diagnostics}
 
-The scripts \path{verified_analysis.py}, \path{main2_validation.py}, and \path{verify_sdgrain_models.py} in \path{paper_gpt/} generate the revision-specific audit files. The second script writes \path{verified_results/main2_grouped_validation.csv}, which contains the three internal protocols used in the main paper: 5-fold, LOO, and LOBO. The third writes \path{verified_results/sdgrain_m15_validation.csv}, which independently refits M3, the additive SD control, and M15. Other verified files contain the fold-contained Family~2 PCA predictions, corrected Family~5 hardness coefficients and bootstrap intervals, the cross-batch composition audit, the E1--E3 external evidence classes, the singularity audit, and a method-claim audit.
+The scripts \path{06_validation/verified_analysis.py}, \path{06_validation/grouped_validation.py}, and \path{03_family3_composition_processing/sdgrain_models.py} in \path{scripts/} generate the revision-specific audit files. The second script writes \path{results/main2_grouped_validation.csv}, which contains the three internal protocols used in the main paper: 5-fold, LOO, and LOBO. The third writes \path{results/sdgrain_m15_validation.csv}, which independently refits M3, the additive SD control, and M15. Other verified files contain the fold-contained Family~2 PCA predictions, corrected Family~5 hardness coefficients and bootstrap intervals, the cross-batch composition audit, the E1--E3 external evidence classes, the singularity audit, and a method-claim audit.
 
 Family~3 M15 OLS coefficients, information criteria, and grouped-CV scores are reproducible from the prepared dataset. Its earlier Bayesian stacking weight and PSIS-LOO comparison remain archival because that probabilistic analysis was not regenerated. The Family~4 nested ARMOTE-CV table remains archival because the raw folds and optimization objects are absent. Family~5 PySR remains exploratory until equation discovery is repeated within every outer training split. Full-data loadings, feature rankings, and symbolic search fronts are descriptive and should not be substituted for held-out performance.
 

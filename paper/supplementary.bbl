@@ -1,147 +1,170 @@
 \begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
 
 \bibitem{Hastings2025FCC}
-Trevor Hastings, Mrinalini Mulukutla, Danial Khatamsaz, Daniel Salas, Wenle Xu,
-  Daniel Lewis, Nicole Person, Matthew Skokan, Braden Miller, James Paramore,
-  Brady Butler, Douglas Allaire, Vahid Attari, Ibrahim Karaman, George Pharr,
-  Ankit Srivastava, and Raymundo Arr\'{o}yave.
-\newblock Accelerated multi-objective alloy discovery through efficient
-  {Bayesian} methods: Application to the {FCC} high entropy alloy space.
-\newblock {\em Acta Materialia}, 297:121173, 2025.
+T.~Hastings, M.~Mulukutla, D.~Khatamsaz, D.~Salas, W.~Xu, D.~Lewis, N.~Person,
+  M.~Skokan, B.~Miller, J.~Paramore, B.~Butler, D.~Allaire, V.~Attari,
+  I.~Karaman, G.~Pharr, A.~Srivastava, R.~Arr\'{o}yave, Accelerated
+  multi-objective alloy discovery through efficient {Bayesian} methods:
+  Application to the {FCC} high entropy alloy space, Acta Materialia 297 (2025)
+  121173.
+\newblock \href {https://doi.org/10.1016/j.actamat.2025.121173}
+  {\path{doi:10.1016/j.actamat.2025.121173}}.
 
 \bibitem{Mulukutla2024BIRDSHOT}
-Mrinalini Mulukutla, A.~Nicole Person, Sven Voigt, Lindsey Kuettner, Branden
-  Kappes, Danial Khatamsaz, Robert Robinson, Daniel Salas~Mula, Wenle Xu,
-  Daniel Lewis, Hongkyu Eoh, Kailu Xiao, Haoren Wang, Jaskaran~Singh Saini, Raj
-  Mahat, Trevor Hastings, Matthew Skokan, Vahid Attari, Michael Elverud,
-  James~D. Paramore, Brady Butler, Kenneth Vecchio, Surya~R. Kalidindi, Douglas
-  Allaire, Ibrahim Karaman, Edwin~L. Thomas, George Pharr, Ankit Srivastava,
-  and Raymundo Arr\'{o}yave.
-\newblock Illustrating an effective workflow for accelerated materials
-  discovery.
-\newblock {\em Integrating Materials and Manufacturing Innovation},
-  13:453--473, 2024.
+M.~Mulukutla, A.~N. Person, S.~Voigt, L.~Kuettner, B.~Kappes, D.~Khatamsaz,
+  R.~Robinson, D.~Salas~Mula, W.~Xu, D.~Lewis, H.~Eoh, K.~Xiao, H.~Wang, J.~S.
+  Saini, R.~Mahat, T.~Hastings, M.~Skokan, V.~Attari, M.~Elverud, J.~D.
+  Paramore, B.~Butler, K.~Vecchio, S.~R. Kalidindi, D.~Allaire, I.~Karaman,
+  E.~L. Thomas, G.~Pharr, A.~Srivastava, R.~Arr\'{o}yave, Illustrating an
+  effective workflow for accelerated materials discovery, Integrating Materials
+  and Manufacturing Innovation 13 (2024) 453--473.
+\newblock \href {https://doi.org/10.1007/s40192-024-00357-3}
+  {\path{doi:10.1007/s40192-024-00357-3}}.
 
 \bibitem{Mulukutla2026BRAVE}
-Mrinalini Mulukutla, Danial Khatamsaz, Trevor Hastings, Wenle Xu, Daniel Salas,
-  Joydeep Kundu, Vasanth~C. Shunmugasamy, Daniel Lewis, Jacob Hempel, Clinton
-  Strosser, Alexandra Salinas, Brent Vela, Nicolas Flores, Sina Hossein~Zadeh,
-  Ali Rachidi, David Elbert, Brady Butler, James Paramore, Dimitris Lagoudas,
-  Justin Wilkerson, George Pharr, Douglas Allaire, Vahid Attari, Ibrahim
-  Karaman, Ankit Srivastava, and Raymundo Arr{\'o}yave.
-\newblock A {BRAVE} alloy design campaign ({B}ayesian risk-aware alloy
-  discovery and exploration), 2026.
+M.~Mulukutla, D.~Khatamsaz, T.~Hastings, W.~Xu, D.~Salas, J.~Kundu, V.~C.
+  Shunmugasamy, D.~Lewis, J.~Hempel, C.~Strosser, A.~Salinas, B.~Vela,
+  N.~Flores, S.~Hossein~Zadeh, A.~Rachidi, D.~Elbert, B.~Butler, J.~Paramore,
+  D.~Lagoudas, J.~Wilkerson, G.~Pharr, D.~Allaire, V.~Attari, I.~Karaman,
+  A.~Srivastava, R.~Arr{\'o}yave, \href{https://arxiv.org/abs/2606.27522}{A
+  {BRAVE} alloy design campaign ({B}ayesian risk-aware alloy discovery and
+  exploration)} (2026).
+\newblock \href {http://arxiv.org/abs/2606.27522} {\path{arXiv:2606.27522}},
+  \href {https://doi.org/10.48550/arXiv.2606.27522}
+  {\path{doi:10.48550/arXiv.2606.27522}}.
+\newline\urlprefix\url{https://arxiv.org/abs/2606.27522}
 
 \bibitem{Varvenne2016}
-C\'{e}line Varvenne, Aitor Luque, and William~A. Curtin.
-\newblock Theory of strengthening in fcc high entropy alloys.
-\newblock {\em Acta Materialia}, 118:164--176, 2016.
+C.~Varvenne, A.~Luque, W.~A. Curtin, Theory of strengthening in fcc high
+  entropy alloys, Acta Materialia 118 (2016) 164--176.
+\newblock \href {https://doi.org/10.1016/j.actamat.2016.07.040}
+  {\path{doi:10.1016/j.actamat.2016.07.040}}.
 
 \bibitem{Varvenne2017}
-C.~Varvenne and W.~A. Curtin.
-\newblock Predicting yield strengths of noble metal high entropy alloys.
-\newblock {\em Scripta Materialia}, 142:92--95, 2017.
+C.~Varvenne, W.~A. Curtin, Predicting yield strengths of noble metal high
+  entropy alloys, Scripta Materialia 142 (2017) 92--95.
+\newblock \href {https://doi.org/10.1016/j.scriptamat.2017.08.030}
+  {\path{doi:10.1016/j.scriptamat.2017.08.030}}.
 
 \bibitem{Labusch1970}
-R.~Labusch.
-\newblock A statistical theory of solid solution hardening.
-\newblock {\em Physica Status Solidi (b)}, 41(2):659--669, 1970.
+R.~Labusch, A statistical theory of solid solution hardening, Physica Status
+  Solidi (b) 41~(2) (1970) 659--669.
+\newblock \href {https://doi.org/10.1002/pssb.19700410221}
+  {\path{doi:10.1002/pssb.19700410221}}.
 
 \bibitem{TodaCaraballo2015}
-I.~Toda-Caraballo and P.~E.~J. Rivera-D\'{i}az-del Castillo.
-\newblock Modelling solid solution hardening in high entropy alloys.
-\newblock {\em Acta Materialia}, 85:14--23, 2015.
+I.~Toda-Caraballo, P.~E.~J. Rivera-D\'{i}az-del Castillo, Modelling solid
+  solution hardening in high entropy alloys, Acta Materialia 85 (2015) 14--23.
+\newblock \href {https://doi.org/10.1016/j.actamat.2014.11.014}
+  {\path{doi:10.1016/j.actamat.2014.11.014}}.
 
 \bibitem{Otto2013}
-F.~Otto, A.~Dlouh{\'y}, Ch. Somsen, H.~Bei, G.~Eggeler, and E.~P. George.
-\newblock The influences of temperature and microstructure on the tensile
-  properties of a {CoCrFeMnNi} high-entropy alloy.
-\newblock {\em Acta Materialia}, 61(15):5743--5755, 2013.
+F.~Otto, A.~Dlouh{\'y}, C.~Somsen, H.~Bei, G.~Eggeler, E.~P. George, The
+  influences of temperature and microstructure on the tensile properties of a
+  {CoCrFeMnNi} high-entropy alloy, Acta Materialia 61~(15) (2013) 5743--5755.
+\newblock \href {https://doi.org/10.1016/j.actamat.2013.06.018}
+  {\path{doi:10.1016/j.actamat.2013.06.018}}.
 
 \bibitem{Yoshida2017}
-S.~Yoshida, T.~Bhattacharjee, Y.~Bai, and N.~Tsuji.
-\newblock Friction stress and {Hall--Petch} relationship in {CoCrNi} equiatomic
-  medium entropy alloy processed by severe plastic deformation and subsequent
-  annealing.
-\newblock {\em Scripta Materialia}, 134:33--36, 2017.
+S.~Yoshida, T.~Bhattacharjee, Y.~Bai, N.~Tsuji, Friction stress and
+  {Hall--Petch} relationship in {CoCrNi} equiatomic medium entropy alloy
+  processed by severe plastic deformation and subsequent annealing, Scripta
+  Materialia 134 (2017) 33--36.
+\newblock \href {https://doi.org/10.1016/j.scriptamat.2017.02.042}
+  {\path{doi:10.1016/j.scriptamat.2017.02.042}}.
 
 \bibitem{Wu2014}
-Z.~Wu, H.~Bei, G.~M. Pharr, and E.~P. George.
-\newblock Temperature dependence of the mechanical properties of equiatomic
-  solid solution alloys with face-centered cubic crystal structures.
-\newblock {\em Acta Materialia}, 81:428--441, 2014.
+Z.~Wu, H.~Bei, G.~M. Pharr, E.~P. George, Temperature dependence of the
+  mechanical properties of equiatomic solid solution alloys with face-centered
+  cubic crystal structures, Acta Materialia 81 (2014) 428--441.
+\newblock \href {https://doi.org/10.1016/j.actamat.2014.08.026}
+  {\path{doi:10.1016/j.actamat.2014.08.026}}.
 
 \bibitem{Moitzi2022}
-Franco Moitzi, Lorenz Romaner, Andrei~V. Ruban, and Oleg~E. Peil.
-\newblock Accurate ab initio modeling of solid solution strengthening in high
-  entropy alloys.
-\newblock {\em Physical Review Materials}, 6:103602, 2022.
+F.~Moitzi, L.~Romaner, A.~V. Ruban, O.~E. Peil, Accurate ab initio modeling of
+  solid solution strengthening in high entropy alloys, Physical Review
+  Materials 6 (2022) 103602.
+\newblock \href {https://doi.org/10.1103/PhysRevMaterials.6.103602}
+  {\path{doi:10.1103/PhysRevMaterials.6.103602}}.
 
 \bibitem{Cordero2016}
-Z.~C. Cordero, B.~E. Knight, and C.~A. Schuh.
-\newblock Six decades of the {Hall--Petch} effect -- a survey of grain-size
-  strengthening studies on pure metals.
-\newblock {\em International Materials Reviews}, 61(8):495--512, 2016.
+Z.~C. Cordero, B.~E. Knight, C.~A. Schuh, Six decades of the {Hall--Petch}
+  effect -- a survey of grain-size strengthening studies on pure metals,
+  International Materials Reviews 61~(8) (2016) 495--512.
+\newblock \href {https://doi.org/10.1080/09506608.2016.1191808}
+  {\path{doi:10.1080/09506608.2016.1191808}}.
 
 \bibitem{Yoshida2019acta}
-Shuhei Yoshida, Takuto Ikeuchi, Tilak Bhattacharjee, Yu~Bai, Akinobu Shibata,
-  and Nobuhiro Tsuji.
-\newblock Effect of elemental combination on friction stress and {Hall}-{Petch}
-  relationship in face-centered cubic high/medium entropy alloys.
-\newblock {\em Acta Materialia}, 171:201--215, 2019.
+S.~Yoshida, T.~Ikeuchi, T.~Bhattacharjee, Y.~Bai, A.~Shibata, N.~Tsuji, Effect
+  of elemental combination on friction stress and {Hall}-{Petch} relationship
+  in face-centered cubic high/medium entropy alloys, Acta Materialia 171 (2019)
+  201--215.
+\newblock \href {https://doi.org/10.1016/j.actamat.2019.04.017}
+  {\path{doi:10.1016/j.actamat.2019.04.017}}.
 
 \bibitem{Oliynyk2016}
-Anton~O. Oliynyk, Erin Antono, Taylor~D. Sparks, Leila Ghadbeigi, Michael~W.
-  Gaultois, Bryce Meredig, and Arthur Mar.
-\newblock High-throughput machine-learning-driven synthesis of full-{Heusler}
-  compounds.
-\newblock {\em Chemistry of Materials}, 28(20):7324--7331, 2016.
+A.~O. Oliynyk, E.~Antono, T.~D. Sparks, L.~Ghadbeigi, M.~W. Gaultois,
+  B.~Meredig, A.~Mar, High-throughput machine-learning-driven synthesis of
+  full-{Heusler} compounds, Chemistry of Materials 28~(20) (2016) 7324--7331.
+\newblock \href {https://doi.org/10.1021/acs.chemmater.6b02724}
+  {\path{doi:10.1021/acs.chemmater.6b02724}}.
 
 \bibitem{Ouyang2018SISSO}
-Runhai Ouyang, Stefano Curtarolo, Emre Ahmetcik, Matthias Scheffler, and
-  Luca~M. Ghiringhelli.
-\newblock {SISSO}: A compressed-sensing method for identifying the best
-  low-dimensional descriptor in an immensity of offered candidates.
-\newblock {\em Physical Review Materials}, 2(8):083802, 2018.
+R.~Ouyang, S.~Curtarolo, E.~Ahmetcik, M.~Scheffler, L.~M. Ghiringhelli,
+  {SISSO}: A compressed-sensing method for identifying the best low-dimensional
+  descriptor in an immensity of offered candidates, Physical Review Materials
+  2~(8) (2018) 083802.
+\newblock \href {https://doi.org/10.1103/PhysRevMaterials.2.083802}
+  {\path{doi:10.1103/PhysRevMaterials.2.083802}}.
 
 \bibitem{Odrzywolek2025}
-Andrzej Odrzywo{\l}ek.
-\newblock All elementary functions from a single binary operator, 2026.
+A.~Odrzywo{\l}ek, All elementary functions from a single binary operator
+  (2026).
+\newblock \href {http://arxiv.org/abs/2603.21852} {\path{arXiv:2603.21852}},
+  \href {https://doi.org/10.48550/arXiv.2603.21852}
+  {\path{doi:10.48550/arXiv.2603.21852}}.
 
 \bibitem{Jiang2022HP}
-Lei Jiang, Huadong Fu, Hongtao Zhang, and Jianxin Xie.
-\newblock Physical mechanism interpretation of polycrystalline metals' yield
-  strength via a data-driven method: A novel {Hall--Petch} relationship.
-\newblock {\em Acta Materialia}, 231:117868, 2022.
+L.~Jiang, H.~Fu, H.~Zhang, J.~Xie, Physical mechanism interpretation of
+  polycrystalline metals' yield strength via a data-driven method: A novel
+  {Hall--Petch} relationship, Acta Materialia 231 (2022) 117868.
+\newblock \href {https://doi.org/10.1016/j.actamat.2022.117868}
+  {\path{doi:10.1016/j.actamat.2022.117868}}.
 
 \bibitem{Borg2020}
-Christopher K.~H. Borg, Carolina Frey, Jasper Moh, Tresa~M. Pollock, and
-  St{\'e}phane Gorsse.
-\newblock Expanded dataset of mechanical properties and observed phases of
-  multi-principal element alloys.
-\newblock {\em Scientific Data}, 7:430, 2020.
+C.~K.~H. Borg, C.~Frey, J.~Moh, T.~M. Pollock, S.~Gorsse, Expanded dataset of
+  mechanical properties and observed phases of multi-principal element alloys,
+  Scientific Data 7 (2020) 430.
+\newblock \href {https://doi.org/10.1038/s41597-020-00768-9}
+  {\path{doi:10.1038/s41597-020-00768-9}}.
 
 \bibitem{SchneiderCrFeNi2021}
-Mike Schneider and Guillaume Laplanche.
-\newblock Data compilation regarding the effects of grain size and temperature
-  on the strength of the single-phase {FCC} {CrFeNi} medium-entropy alloy.
-\newblock {\em Data in Brief}, 34:106712, 2021.
+M.~Schneider, G.~Laplanche, Data compilation regarding the effects of grain
+  size and temperature on the strength of the single-phase {FCC} {CrFeNi}
+  medium-entropy alloy, Data in Brief 34 (2021) 106712.
+\newblock \href {https://doi.org/10.1016/j.dib.2020.106712}
+  {\path{doi:10.1016/j.dib.2020.106712}}.
 
 \bibitem{HuangTY2019}
-Yung-Chien Huang, Che-Hsuan Su, Shyi-Kaan Wu, and Chieh Lin.
-\newblock A study on the {Hall--Petch} relationship and grain growth kinetics
-  in {FCC}-structured high/medium entropy alloys.
-\newblock {\em Entropy}, 21(3):297, 2019.
+Y.-C. Huang, C.-H. Su, S.-K. Wu, C.~Lin, A study on the {Hall--Petch}
+  relationship and grain growth kinetics in {FCC}-structured high/medium
+  entropy alloys, Entropy 21~(3) (2019) 297.
+\newblock \href {https://doi.org/10.3390/e21030297}
+  {\path{doi:10.3390/e21030297}}.
 
 \bibitem{Tabor1951}
-D.~Tabor.
-\newblock {\em The Hardness of Metals}.
-\newblock Clarendon Press, Oxford, 1951.
+D.~Tabor, The Hardness of Metals, Clarendon Press, Oxford, 1951.
 
 \bibitem{Dao2001}
-M.~Dao, N.~Chollacoop, K.~J. Van~Vliet, T.~A. Venkatesh, and S.~Suresh.
-\newblock Computational modeling of the forward and reverse problems in
-  instrumented sharp indentation.
-\newblock {\em Acta Materialia}, 49(19):3899--3918, 2001.
+M.~Dao, N.~Chollacoop, K.~J. Van~Vliet, T.~A. Venkatesh, S.~Suresh,
+  Computational modeling of the forward and reverse problems in instrumented
+  sharp indentation, Acta Materialia 49~(19) (2001) 3899--3918.
+\newblock \href {https://doi.org/10.1016/S1359-6454(01)00295-6}
+  {\path{doi:10.1016/S1359-6454(01)00295-6}}.
 
 \end{thebibliography}
