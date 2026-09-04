@@ -61,6 +61,58 @@ High-entropy alloys \sep Yield strength \sep Vickers hardness \sep Solid solutio
 \end{keyword}
 \end{frontmatter}
 
+\section*{Abbreviations}
+
+{\small
+\begin{description}
+\setlength{\itemsep}{0pt}
+\setlength{\parskip}{0pt}
+
+\item[AI] Artificial intelligence
+\item[AIC] Akaike information criterion
+\item[AICc] Corrected Akaike information criterion
+\item[ARMOTE-CV] Automated Regression with Multi-Objective Tuning and Evaluation via Cross-Validation
+\item[AUC] Area under the receiver-operating-characteristic curve
+\item[BIC] Bayesian information criterion
+\item[BIRDSHOT] Batch-wise Improvement in Reduced Materials Design Space Using a Holistic Optimization Technique 
+\item[BO] Bayesian optimization
+\item[CV] Cross-validation
+\item[EBSD] Electron backscatter diffraction
+\item[EDS] Energy-dispersive X-ray spectroscopy
+\item[EML] Binary symbolic-regression operator,$\operatorname{eml}(x,y)=\exp(x)-\ln(y)$
+\item[FCC] Face-centered cubic
+\item[HP] Hall-Petch
+\item[HTMDEC] High-Throughput Materials Discovery for Extreme Conditions
+\item[HV] Vickers hardness
+\item[JMAK] Johnson-Mehl-Avrami-Kolmogorov
+\item[KRR] Kernel ridge regression
+\item[Lasso] Least absolute shrinkage and selection operator
+\item[LightGBM] Light Gradient Boosting Machine
+\item[LOBO] Leave-one-batch-out
+\item[LOO] Leave-one-out
+\item[ML] Machine learning
+\item[MLP] Multilayer perceptron
+\item[MPEA] Multi-principal element alloy
+\item[OLS] Ordinary least squares
+\item[PCA] Principal component analysis
+\item[PSIS-LOO] Pareto-smoothed importance-sampling leave-one-out
+\item[PySR] Python symbolic-regression package
+\item[RBF] Radial basis function
+\item[RMSE] Root-mean-square error
+\item[SD] Standard deviation
+\item[SHAP] SHapley Additive exPlanations
+\item[SI] Supplementary Information
+\item[SISSO] Sure independence screening and sparsifying operator
+\item[SSS] Solid-solution strengthening
+\item[SVR] Support vector regression
+\item[VEC] Valence electron concentration
+\item[VLC] Varvenne-Leyson-Curtin
+\item[XGBoost] Extreme Gradient Boosting
+\item[YS] Yield strength
+
+\end{description}
+}
+
 \section{Introduction}
 \label{sec:intro}
 
@@ -69,13 +121,13 @@ Grain size is one of the primary microstructural variables controlling strength 
 \sigma_y=\sigma_0+k_{\mathrm{HP}}d^{-1/2}
 \label{eq:hp}
 \end{equation}
-which separates a grain-size-independent intercept from the grain-boundary strengthening term~\cite{Hall1951,Petch1953,Cordero2016}. In concentrated FCC alloys, composition can influence solid-solution resistance, ordering, stacking fault energy, and boundary-mediated deformation. Hall-Petch slopes and intercepts therefore vary significantly among alloy systems~\cite{Otto2013,Yoshida2017,LiKHP2024}. Several other grain-size laws can fit a limited range of $d$ almost as well as Eq.~\eqref{eq:hp}. A good regression fit alone therefore does not completely and accurately identify the underlying microscopic mechanism.
+which separates the grain-boundary strengthening term from an intercept $\sigma_0$ carrying the strength retained in the large-grain limit, where lattice friction and solute strengthening set the resistance to slip~\cite{Hall1951,Petch1953,Cordero2016}. In concentrated FCC alloys, composition acts on both terms, changing solute resistance, ordering, and stacking fault energy, and altering boundary-mediated deformation. Both therefore vary among alloy systems~\cite{Otto2013,Yoshida2017,LiKHP2024}; reported slopes span 110~MPa$\cdot\mu$m$^{1/2}$ in pure Cu to 516 in CoCrFeNi~\cite{Cordero2016,Yoshida2019acta}. Several other grain-size laws fit a limited range of $d$ almost as well as Eq.~\eqref{eq:hp}, so a good regression fit identifies the trend while leaving the mechanism open.
 
-Multi-principal element alloys (MPEAs) span composition and processing spaces that are high dimensional and too large to explore exhaustively~\cite{Cantor2004,Yeh2004,George2019,Miracle2017}. Closed-loop machine learning (ML) can speed up this search~\cite{Rao2022,Hastings2025FCC,Mulukutla2024BIRDSHOT,Mulukutla2026BRAVE}. However, a property model becomes harmful when a good interpolation score is used to support decisions about new compositions, processing routes, or experimental campaigns. This risk is especially high for small and sparse experimental datasets that represent these very high dimensional design spaces. Nearby compositions, repeated conditions, and campaign-specific processing can make a random train/test split much easier than the intended alloy design problem~\cite{Meredig2018,WangAYT2020,LiMDHIT2024}.
-
-Physics-based solid solution strengthening (SSS) models and composition descriptors provide compact alternatives to using unconstrained elemental fractions~\cite{Varvenne2016,Varvenne2017,Labusch1970,TodaCaraballo2015,Wen2021SSS}. However, these descriptors are calculated directly from composition and may add little information after composition is already included. Non-linear and symbolic models can capture interactions that a linear model misses, but they also search a much larger space. As a result, they can exploit campaign identity, correlated descriptors, or unstable denominators. A feature can be physically meaningful without being transferable, and an equation can be interpretable without being a validated physical law.
+Physics-based solid solution strengthening models and composition descriptors provide compact alternatives to using unconstrained elemental fractions~\cite{Varvenne2016,Varvenne2017,Labusch1970,TodaCaraballo2015,Wen2021SSS}. The SSS models estimate the solute contribution to the intercept from atomic size and modulus misfit, while the descriptors summarize composition through quantities such as valence electron concentration and atomic size mismatch. However, these descriptors are calculated directly from composition and may add little information after composition is already included. Non-linear and symbolic models can capture interactions that a linear model misses, but they also search a much larger space. As a result, they can exploit campaign identity, correlated descriptors, or unstable denominators. A feature can be physically meaningful without being transferable, and an equation can be interpretable without being a validated physical law.
 
 Hardness serves as an additional, complementary target. Vickers hardness captures the material's resistance to deformation under localized loading. The empirical Tabor relation relates hardness to a representative flow stress, rather than directly to 0.2\% offset YS~\cite{Tabor1951,Dao2001}. Applying the same modeling and validation framework to YS and HV shows whether the relevant features depend on the property being modeled.
+
+The alloys examined here come from closed-loop design campaigns rather than a study designed to vary grain size alone. Multi-principal element alloys span composition and processing spaces that are high dimensional and too large to explore exhaustively~\cite{Cantor2004,Yeh2004,George2019,Miracle2017}. Closed-loop machine learning (ML) can speed up this search~\cite{Rao2022,Hastings2025FCC,Mulukutla2024BIRDSHOT,Mulukutla2026BRAVE}. However, a property model becomes harmful when a good interpolation score is used to support decisions about new compositions, processing routes, or experimental campaigns. This risk is especially high for small and sparse experimental datasets that represent these very high dimensional design spaces. Nearby compositions, repeated conditions, and campaign-specific processing can make a random train/test split much easier than the intended alloy design problem~\cite{Meredig2018,WangAYT2020,LiMDHIT2024}.
 
 ~\autoref{fig:framework} and Table~\ref{tab:families} define the five model families used throughout this paper, with the same names and order: Family~1 (\familyone), Family~2 (\familytwo), Family~3 (\familythree), Family~4 (\familyfour), and Family~5 (\familyfive). The families ask five sequential questions: What does grain size explain? Do physics-based descriptors capture the remaining strength? What do measured composition and processing add? Does non-linearity help when inputs are matched? Can symbolic search produce useful closed forms? A higher family number does not imply greater physical fidelity. We combine this hierarchy with 5-fold CV, record-level LOO, batch-level LOBO, an external literature stress test, and singularity auditing of closed-form equations.
 
@@ -110,9 +162,9 @@ Family & Fixed name & Analyses \\
 
 \subsection{Alloy Synthesis and characterization}
 
-The dataset contains 94 FCC alloy conditions in the Al--Co--Cr--Cu--Fe--Mn--Ni--V system. YS is available for 93 conditions, and HV is available for all 94. An earlier Campaign A established the closed-loop, multi-objective alloy-discovery workflow used across this effort~\cite{Hastings2025FCC}; its records are not part of the present property modeling dataset because that campaign used a different processing route. The samples analyzed here were generated from the subsequent B and C Bayesian optimization campaigns at Texas A\&M University within BIRDSHOT Center, supported by the U.S. Army DEVCOM High-Throughput Materials Discovery for Extreme Conditions (HTMDEC) initiative~\cite{Mulukutla2024BIRDSHOT,Mulukutla2026BRAVE}. The B campaign contributes 35 candidates from batches BBA, BBB, and BBC, including 34 with YS. It explored composition under an FCC phase stability constraint while holding processing fixed. The complete B-campaign synthesis and specimen preparation workflow is documented in Ref.~\cite{Mulukutla2026BRAVE}.
+The dataset contains 94 FCC alloy conditions in the Al--Co--Cr--Cu--Fe--Mn--Ni--V system. YS is available for 93 conditions, and HV is available for all 94. An earlier Campaign AA established the closed-loop, multi-objective alloy-discovery workflow used across this effort~\cite{Hastings2025FCC}; its records are not part of the present property modeling dataset because that campaign used a different processing route. The samples analyzed here were generated from the subsequent BB and CB Bayesian optimization campaigns at Texas A\&M University within BIRDSHOT Center, supported by the U.S. Army DEVCOM High-Throughput Materials Discovery for Extreme Conditions (HTMDEC) initiative~\cite{Mulukutla2024BIRDSHOT,Mulukutla2026BRAVE}. The BB campaign contributes 35 candidates from batches BBA, BBB, and BBC, including 34 with YS. It explored composition under an FCC phase stability constraint while holding processing fixed. The complete BB-campaign synthesis and specimen preparation workflow is documented in Ref.~\cite{Mulukutla2026BRAVE}.
 
-The C campaign contributes 59 candidates from CBA, CBB, and CBC. Building on the B-campaign results, it focused on a V--Cr--Mn--Fe--Co--Ni design space and jointly varied composition with three processing variables: cold work, recrystallization temperature, and hold time. Candidate alloys were iteratively selected from an FCC-constrained, manufacturable design space with the models updated after each iteration using the newly acquired data. A modified JMAK-type static-recrystallization and grain-growth prior supplied grain-size estimates over the feasible design space to guide candidate selection. That model and the complete C-campaign workflow will be reported in a separate future publication. The property models evaluated here use grain sizes measured by electron backscatter diffraction (EBSD), not these design-stage predictions.
+The CB campaign contributes 59 candidates from CBA, CBB, and CBC. Building on the BB-campaign results, it focused on a V--Cr--Mn--Fe--Co--Ni design space and jointly varied composition with three processing variables: cold work, recrystallization temperature, and hold time. Candidate alloys were iteratively selected from an FCC-constrained, manufacturable design space with the models updated after each iteration using the newly acquired data. A modified JMAK-type static-recrystallization and grain-growth prior supplied grain size estimates over the feasible design space to guide candidate selection. That model and the complete CB-campaign workflow will be reported in a separate future publication. The property models evaluated here use grain sizes measured by electron backscatter diffraction (EBSD), not these design-stage predictions.
 
 Overall, both campaigns used the same high level production route: high-purity elemental feedstock was vacuum arc melted, homogenized, cold rolled, recrystallized, and quenched. Energy-dispersive X-ray spectroscopy (EDS) and X-ray diffraction were used to check realized chemistry and phase constitution, while electron microscopy and EBSD documented the microstructure. Grain size was measured from EBSD maps on surfaces normal to the rolling direction and summarized by the equivalent circle mean $d$ and within-map standard deviation $\mathrm{SD}_{\mathrm{grain}}$. Representative candidate alloy verification is shown in ~\autoref{fig:microstructure}. Quasistatic tensile testing was used to determine 0.2\% offset YS, while Vickers indentation tests provided the HV. Further details for BBA-BBC are given in Ref.~\cite{Mulukutla2026BRAVE}; a detailed account of CBA-CBC will follow in the campaign publication.
 
@@ -198,7 +250,7 @@ The interaction allows the grain-distribution width to modify the fitted grain-s
 
 \subsection{Family 4: \familyfour}
 
-Family~4 compares linear controls and non-linear estimators using the same S1--S4 matrices and validation splits. OLS, Ridge, Lasso, and ElasticNet are retained so that the added value of non-linearity can be measured at fixed inputs. The primary audit uses declared, fixed parameter settings with no data-driven hyperparameter selection. For example, Lasso uses $\alpha=1.0$, while LightGBM uses 400 estimators, a maximum depth of 3, a learning rate of 0.05, and a feature fraction of 0.8. These are settings chosen for this study, not ``library defaults.'' A separate ARMOTE-CV panel applies nested Optuna tuning, with the search performed inside each training fold and the scalers refitted on the training split alone. For the models audited here, the stored per-fold studies, selected parameters, and fitted models reproduce the reported scores directly, so those results are treated as confirmatory rather than archival evidence. We also exclude the legacy full-data-tuned leaderboard from confirmatory rankings.
+Family~4 compares linear controls and non-linear estimators using the same S1--S4 matrices and validation splits. OLS, Ridge, Lasso, and ElasticNet are retained so that the added value of non-linearity can be measured at fixed inputs. The primary audit uses declared, fixed parameter settings with no data-driven hyperparameter selection. For example, Lasso uses $\alpha=1.0$, while LightGBM uses 400 estimators, a maximum depth of 3, a learning rate of 0.05, and a feature fraction of 0.8. These are settings chosen for this study, not ``library defaults.'' A separate ARMOTE-CV panel reports nested Optuna tuning for eight regressors, with the search performed inside each training fold and the scalers refitted per fold. Its stored per-fold studies, selected parameters, and fitted models allow the reported scores to be reproduced directly, so we treat it as confirmatory rather than archival evidence. We also exclude the legacy full-data-tuned leaderboard from confirmatory rankings.
 
 \subsection{Family 5: \familyfive}
 
