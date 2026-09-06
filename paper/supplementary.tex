@@ -486,7 +486,7 @@ The nested ARMOTE-CV panel gives YS Bayesian ridge at S2 with $R^2=0.685$ under 
 
 \subsection{Legacy 17-model panel and SHAP audit}
 
-The legacy 17-model panel tuned selected models on the full dataset before LOO. It also gave the tree models up to 64 interaction features. Its XGBoost scores, 0.729 under LOO and 0.574 under LOBO, are therefore not confirmatory. The 0.155 difference is a validation gap; it does not prove that batch patterns cause 21\% of the explained variance. Table~\ref{tab:legacy} is retained for provenance. It should not be compared numerically with the fixed-setting primary panel as though both used the same selection protocol.
+The legacy 17-model panel tuned selected models on the full dataset before LOO. It also gave the tree models up to 64 interaction features. Its XGBoost scores, 0.729 under LOO and 0.574 under LOBO, therefore do not enter the primary comparison. The 0.155 difference is a validation gap; it does not prove that batch patterns cause 21\% of the explained variance. Table~\ref{tab:legacy} is retained for provenance. It should not be compared numerically with the fixed-setting primary panel as though both used the same selection protocol.
 
 \begin{table}[H]
 \centering
@@ -534,7 +534,7 @@ An expanded archived search added $x^2$, $\sqrt{x}$, and $x^{-1}$, nine alternat
 
 PySR used three feature pools, renamed P1--P3 here to avoid confusion with the five Family labels. P1 contains $d^{-1/2}$ and $\mathrm{SD}_{\mathrm{grain}}$. P2 adds raw composition and processing. P3 instead adds six Wen descriptors and processing. The archived files call these pools F1--F2. The operator sets were O1 ($+,-$), O2 ($+,-,\times,\div$), and O3 (O2 plus protected square root, logarithm, square, and cube). Each cell used 50--75 search iterations. Equation structures and elbow or accuracy selections were obtained using the complete target dataset.
 
-The full PySR grid is given in Table~\ref{tab:pysrgrid}; its complexity--loss front is shown in the main paper. For CV, the numerical constants in the selected full-data expression were replaced with free parameters and refit in each training fold. This tests a frozen structure after it has been selected; it does not repeat the structure search. The stored LOBO values in Table~\ref{tab:pysr} are averages of per-batch $R^2$. In contrast, the confirmatory values in the main text are pooled $Q^2$. We report the stored values for provenance but do not place them on the same leaderboard.
+The full PySR grid is given in Table~\ref{tab:pysrgrid}; its complexity--loss front is shown in the main paper. For CV, the numerical constants in the selected full-data expression were replaced with free parameters and refit in each training fold. This tests a frozen structure after it has been selected; it does not repeat the structure search. The stored LOBO values in Table~\ref{tab:pysr} are averages of per-batch $R^2$. In contrast, the values reported in the main text are pooled $Q^2$. We report the stored values for provenance but do not place them on the same leaderboard.
 
 \begin{table}[H]
 \centering
