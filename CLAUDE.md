@@ -185,9 +185,13 @@ The manuscript separates these deliberately, and so should you:
   stress test, Tabor, the dataset audit.
 - **Verified from stored artifacts** — the nested ARMOTE-CV panel. Its
   generator stores one Optuna study, one selected parameter set, and one pair
-  of feature and target scalers per fold. Across the six LOBO folds the four
-  Bayesian-ridge hyperparameters take six distinct values, and the scalers are
-  fitted on each training split alone. Reloading those objects and predicting
+  of feature and target scalers per fold. Across the six LOBO folds the five
+  tuned Bayesian-ridge hyperparameters (`max_iter`, `alpha_1`, `alpha_2`,
+  `lambda_1`, `lambda_2`; see `armote_cv/run_lobo.py`) take six distinct
+  values, and the scalers are fitted on each training split alone. Note that
+  the generator's `Avg Test R2` column holds the **pooled** Q², not the mean of
+  the fold scores — for this model the fold mean is 0.522 against a pooled
+  0.613. Reloading those objects and predicting
   each held-out batch reproduces the six fold scores exactly and gives a pooled
   LOBO Q² of 0.613 with RMSE 50.5 MPa. The manuscript therefore reports the
   nesting as verified, not assumed — do not downgrade it to archival.

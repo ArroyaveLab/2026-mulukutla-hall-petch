@@ -45,7 +45,7 @@ them against the values printed in the paper.
 **Verified from stored artifacts.** The nested ARMOTE-CV panel is not re-run,
 but it is checked. Its generator stores one Optuna study, one selected
 parameter set, and one pair of feature and target scalers per fold. Across the
-six LOBO folds the four Bayesian-ridge hyperparameters take six distinct
+six LOBO folds the five tuned Bayesian-ridge hyperparameters take six distinct
 values, and each scaler is fitted on its training split alone. Reloading those
 objects and predicting each held-out batch reproduces all six fold scores
 exactly and gives a pooled LOBO Q² of 0.613 with RMSE 50.5 MPa. The manuscript

@@ -119,11 +119,16 @@ manuscript can drift.
 
 The **nested ARMOTE-CV panel** is verified rather than re-run. Its generator
 stores one Optuna study, one selected parameter set, and one pair of feature
-and target scalers per fold. Across the six LOBO folds the four Bayesian-ridge
-hyperparameters take six distinct values, and each scaler is fitted on its
-training split alone. Reloading those objects and predicting each held-out
-batch reproduces all six fold scores exactly and gives a pooled LOBO Q² of
-0.613 (RMSE 50.5 MPa). The nesting is therefore demonstrated, not asserted.
+and target scalers per fold. Across the six LOBO folds the five tuned
+Bayesian-ridge hyperparameters take six distinct values, and each scaler is
+fitted on its training split alone. Reloading those objects and predicting
+each held-out batch reproduces all six fold scores exactly and gives a pooled
+LOBO Q² of 0.613 (RMSE 50.5 MPa). The nesting is therefore demonstrated, not
+asserted.
+
+Those artifacts ship with the repository, under
+`scripts/04_family4_nonlinear_ml/armote_cv/` — see the README there for what
+was kept and what was left upstream.
 
 Two analyses are **archival** and are not regenerated here, in the manuscript,
 or by `make`:
