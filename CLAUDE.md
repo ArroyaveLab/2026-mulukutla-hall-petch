@@ -144,6 +144,36 @@ separate models and separate validation. Two consequences to preserve:
 
 **Do not edit the `.ipynb`.** Edit `notebook/_generate_notebook.py` and re-run.
 
+## 4a. Two-column typesetting
+
+`paper/main.tex` is `\documentclass[5p,times,twocolumn]{elsarticle}` — the
+Elsevier journal layout, not a preprint. Other group papers write
+`[final,5p,times,twocolumn]`; `final` is a no-op once `5p` is given (tested:
+identical page count, identical text layer, no "Preprint submitted to" footer),
+so either spelling is fine. The supplement is plain `article`, single column.
+
+Rules the layout imposes, all currently satisfied:
+
+- **A graphic's width unit must match its float.** `\columnwidth` inside
+  `figure`, `\textwidth` inside `figure*`. Putting a `\textwidth` graphic in an
+  unstarred float in two-column mode overflows the column by roughly a factor
+  of two.
+- **Wide content goes in `figure*` / `table*`**, which span both columns and
+  can only be placed at the top of a page. Currently 4 `figure*` and 3
+  `table*`; the rest are single-column.
+- **Long equations need explicit breaks.** Eq. 8 uses `\begin{split}`; without
+  it the HV form runs past the column. There is no automatic line breaking in
+  display maths.
+- **`[H]` is fragile here.** Two tables use it (`tab:families`, `tab:inputs`).
+  It renders correctly today, but `[H]` forbids float migration, so inserted
+  text can push a table into a bad break instead of letting it float. Prefer
+  `[t]` if either one starts misbehaving.
+
+Check before shipping a build: `Overfull \hbox` and `Overfull \vbox` must both
+be **zero** in `paper/main.log`. They are today. A few `Underfull` warnings are
+loose inter-word spacing and are cosmetic. Note the shell aliases `grep` to
+`ugrep`, whose `-c` prints nothing here — count with Python, not `grep -c`.
+
 ## 5. Figure conventions
 
 `scripts/_figstyle.py` is the single source of truth for colour and type.
