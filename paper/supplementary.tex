@@ -12,6 +12,8 @@
 \usepackage{float}
 \usepackage[protrusion=true,expansion=false]{microtype}
 \usepackage[hidelinks]{hyperref}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 \sisetup{separate-uncertainty=true}
 \graphicspath{{figures/}}
@@ -24,6 +26,7 @@
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\theequation}{S\arabic{equation}}
+\renewcommand{\thealgorithm}{S\arabic{algorithm}}
 \setlength{\emergencystretch}{3em}
 
 \title{Supplementary Information for:\\
@@ -432,15 +435,13 @@ The fitted M3 coefficients are listed in Table~\ref{tab:m3}, and literature Hall
 
 \begin{table}[H]
 \centering
-\caption{Literature context for the fitted constant Hall--Petch slope, ordered by $k_{\mathrm{HP}}$. All values are room temperature and, except where noted, are fitted to tensile yield strength. Otto et al.\ report $k_{\mathrm{HP}}$ for CoCrFeMnNi falling from 538 at 77~K to 127 at 1073~K, so comparison across studies is meaningful only at matched test temperature. $^{\dagger}$For the two pure metals the range is the span of grain sizes covered by the studies aggregated in that survey, not the window of a single fit. $^{\ddagger}$Fitted to compression data. The two Al$_{0.3}$ alloys remain single-phase FCC by selected-area diffraction; their large coefficients are attributed to coherency strain from nanometre-scale Ni--Al clusters rather than to precipitates~\cite{Jagetia2021}.}
+\caption{Literature context for the fitted constant Hall--Petch slope, ordered by $k_{\mathrm{HP}}$. All values are room temperature and, except where noted, are fitted to tensile yield strength. Coefficients obtained by converting hardness to strength are excluded, because that conversion depends on the work-hardening response rather than on a fixed factor; this also excludes survey values for pure metals that pool indentation and tensile data in a single fit~\cite{Cordero2016}. Otto et al.\ report $k_{\mathrm{HP}}$ for CoCrFeMnNi falling from 538 at 77~K to 127 at 1073~K, so comparison across studies is meaningful only at matched test temperature. $^{\ddagger}$Fitted to compression data. The two Al$_{0.3}$ alloys remain single-phase FCC by selected-area diffraction; their large coefficients are attributed to coherency strain from nanometre-scale Ni--Al clusters rather than to precipitates~\cite{Jagetia2021}.}
 \label{tab:khplit}
 \small
 \begin{tabular}{lrcl}
 \toprule
 Alloy & $k_{\mathrm{HP}}$ (MPa$\cdot\mu$m$^{1/2}$) & $d$ range ($\mu$m) & Source \\
 \midrule
-Pure Cu & 110 & 0.005--320$^{\dagger}$ & Cordero et al.~\cite{Cordero2016} \\
-Pure Ni & 230 & 0.01--460$^{\dagger}$ & Cordero et al.~\cite{Cordero2016} \\
 CoCrNi & 265 & 0.29--111 & Yoshida et al.~\cite{Yoshida2017} \\
 CoCrFeNi & 276 & 0.55--32.2 & Yoshida et al.~\cite{Yoshida2019acta} \\
 CoCrFeMnNi & 494 & 4.4--155 & Otto et al.~\cite{Otto2013} \\
@@ -473,6 +474,145 @@ BBC & 8 & 0.750 & 0.259 & 0.656 & 51.9 \\
 CBA & 23 & 1.000 & 0.295 & 0.423 & 44.9 \\
 CBB & 15 & 0.933 & 0.174 & 0.584 & 49.6 \\
 CBC & 21 & 0.476 & $-0.038$ & 0.409 & 60.4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Family 4: \familyfour}
+\label{si:ml}
+
+Family~4 compares twenty estimators on the identical S1--S4 matrices used elsewhere in this work, under nested tuning with ARMOTE-CV. Fifteen estimators (Bayesian ridge, ridge, Lasso, ElasticNet, kernel ridge, support vector regression, decision tree, random forest, extra trees, gradient boosting, XGBoost, LightGBM, CatBoost, Gaussian process regression, and a neural network) are tuned per outer fold; five (ordinary least squares, a multilayer perceptron, PCA-OLS, a mean-predicting Dummy baseline, and a stacking ensemble) are run at fixed settings within this panel. 
+Algorithm~\ref{alg:armotecv} gives the nested procedure applied to every outer fold of every protocol; Tables~\ref{tab:armote_tuned} and~\ref{tab:armote_fixed} give the full model roster and search spaces; Tables~\ref{tab:f4_5fold} and~\ref{tab:f4_loo} give the complete 5-fold and LOO results underlying the main-text summary.
+
+\begin{algorithm}[H]
+\caption{ARMOTE-CV nested-tuning procedure, applied independently within each outer fold of each protocol (5-fold, LOO, LOBO)}
+\label{alg:armotecv}
+\begin{algorithmic}[1]
+\Require Feature matrix $X$, target $y$, model class $\mathcal{M}$, outer splitter $\mathcal{S}\in\{\text{KFold}_5,\ \text{LOO},\ \text{LOGO}_{\text{batch}}\}$
+\For{each outer fold $(X_{\text{train}}, y_{\text{train}}, X_{\text{test}}, y_{\text{test}})$ from $\mathcal{S}$}
+    \State Split $X_{\text{train}}, y_{\text{train}}$ into 5 inner folds for hyperparameter scoring
+    \For{$t = 1$ to $50$} \Comment{Optuna TPE trial, seed 42}
+        \State Sample candidate hyperparameters $\theta_t$
+        \State Fit $\mathcal{M}(\theta_t)$ across the 5 inner folds; record mean MSE and mean $R^2$
+    \EndFor
+    \State $\theta^\ast \leftarrow \arg\max_{\theta_t} R^2$ over the Pareto front of (MSE, $R^2$)
+    \State Fit feature and target \texttt{StandardScaler}s on $X_{\text{train}}, y_{\text{train}}$ only
+    \State Refit $\mathcal{M}(\theta^\ast)$ on the complete, scaled $X_{\text{train}}, y_{\text{train}}$
+    \State Predict $X_{\text{test}}$ with the refit model and scalers; invert target scaling to recover original units
+    \State Store the study, $\theta^\ast$, fitted model, and scalers for this fold
+\EndFor
+\State \Return per-fold scores, pooled out-of-fold predictions
+\end{algorithmic}
+\end{algorithm}
+
+\begin{table}[H]
+\centering
+\caption{Family~4 tuned-estimator search spaces. All ranges are sampled log-uniformly where marked (log); otherwise uniformly.}
+\label{tab:armote_tuned}
+\small
+\begin{tabular}{@{}lp{7.4cm}@{}}
+\toprule
+Model & Search space \\
+\midrule
+Bayesian ridge & max\_iter [100,500]; $\alpha_1,\alpha_2,\lambda_1,\lambda_2$ [$10^{-7},10^{-5}$] (log) \\
+Support vector regression & $C$ [0.1,$10^4$] (log); $\gamma$ [$10^{-4}$,1.0] (log); $\varepsilon$ [$10^{-3}$,0.5] (log) \\
+Decision tree & max\_depth [5,50]; min\_samples\_split [2,20]; min\_samples\_leaf [1,20] \\
+Random forest & n\_estimators [50,200]; max\_depth [5,50]; min\_samples\_split [2,20]; min\_samples\_leaf [1,10] \\
+XGBoost & n\_estimators [50,200]; learning\_rate [0.01,0.5] (log); max\_depth [3,10]; subsample [0.6,1.0]; colsample\_bytree [0.6,1.0] \\
+Gaussian process regression & kernel $\in\{$RBF, Mat\'ern $\nu{=}0.5$, Mat\'ern $\nu{=}1.5$, Mat\'ern $\nu{=}2.5$, Rational Quadratic$\}$; $\alpha$ [$10^{-10}$,$10^{-1}$] (log) \\
+Neural network & hidden\_layers [1,4]; units (first layer) [32,128]; activation $\in\{$relu, tanh, selu$\}$; learning\_rate [$10^{-5}$,$10^{-2}$] (log); fixed at 100 epochs, batch size 8 \\
+Ridge & $\alpha$ [$10^{-3}$,$10^{3}$] (log) \\
+Lasso & $\alpha$ [$10^{-4}$,10] (log) \\
+ElasticNet & $\alpha$ [$10^{-4}$,10] (log); l1\_ratio [0.05,0.95] \\
+Kernel ridge & $\alpha$ [$10^{-3}$,10] (log); $\gamma$ [$10^{-4}$,1.0] (log); kernel fixed at RBF \\
+Extra trees & n\_estimators [50,400]; max\_depth [5,50]; min\_samples\_split [2,20]; min\_samples\_leaf [1,10] \\
+Gradient boosting & n\_estimators [50,400]; learning\_rate [0.01,0.3] (log); max\_depth [2,8]; subsample [0.6,1.0] \\
+LightGBM & n\_estimators [50,700]; max\_depth [2,6]; learning\_rate [0.005,0.2] (log); num\_leaves [7,63]; min\_child\_samples [5,30]; subsample [0.5,1.0]; colsample\_bytree [0.3,1.0] \\
+CatBoost & iterations [50,500]; depth [3,10]; learning\_rate [0.01,0.3] (log); l2\_leaf\_reg [1.0,10] (log) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Family~4 fixed-settings estimators (no Optuna search within this panel).}
+\label{tab:armote_fixed}
+\small
+\begin{tabular}{@{}lp{7.4cm}@{}}
+\toprule
+Model & Configuration \\
+\midrule
+Ordinary least squares & No hyperparameters \\
+Multilayer perceptron & Hidden layers (64, 32); max\_iter 2000; early stopping enabled \\
+PCA-OLS & 6 principal components $+$ OLS; skipped for S1 (2 features, below the 6-component minimum) \\
+Dummy & Predicts the training-partition mean; baseline for all comparisons \\
+Stacking & Base learners: random forest, XGBoost, LightGBM, each at library defaults; meta-learner: ridge with $\alpha$ selected by internal CV over 20 log-spaced points in [$10^{-3}$,$10^{3}$] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The Bayesian information criterion is reported only for the five linear-parametric estimators above that admit a closed-form effective-parameter count -- ordinary least squares, ridge, Lasso, ElasticNet, and PCA-OLS ($k=$ number of retained features $+1$, or $6+1$ for PCA-OLS) -- computed from the pooled leave-one-out out-of-fold error. It is left blank for every tree-based, kernel-based, boosting, or ensemble estimator.
+
+Four estimators are omitted from the main-text figure and comparison, for two distinct reasons. Lasso's tuned $\alpha$ range, applied to a standardized target, drives all coefficients to exactly zero at S2 and S3, collapsing it to an intercept-only fit; its LOBO $R^2$ ($-0.122$) is bit-for-bit identical to the Dummy baseline at both tiers. Ridge, Bayesian ridge, and ElasticNet do not show this behavior, since their L2 or blended L1/L2 penalties shrink coefficients rather than zeroing them outright. CatBoost and decision tree are omitted as redundant, given random forest, extra trees, gradient boosting, XGBoost, and LightGBM already span the tree-ensemble and boosting space. The multilayer perceptron is omitted for instability: its scores swing between competitive and severely negative across tiers and protocols (YS S1 LOBO $=-1.03$; HV S3 LOBO $=-2.28$), unlike the neural network estimator (NNR), which shows similar volatility but is tuned per fold and is retained.
+
+For YS, ridge and Bayesian ridge lead at S2 (5-fold/LOO/LOBO $R^2=0.695/0.662/0.614$ and $0.685/0.666/0.613$); reloading the stored per-fold Bayesian-ridge models and scalers and re-predicting each held-out batch reproduces this score exactly, with pooled RMSE $=\SI{50.5}{MPa}$. Kernel ridge is the closest non-linear competitor ($0.695/0.660/0.594$); tree-based and boosted estimators trail further behind under LOBO specifically. The same ordering holds at S1, S3, and S4 (Tables~\ref{tab:f4_5fold},~\ref{tab:f4_loo}).
+
+For HV, kernel ridge is the only estimator among all twenty with a positive LOBO score at S1 ($0.228/0.466/0.190$); every other estimator is negative at this tier. Once composition or processing descriptors are added (S2--S4), the record-level and batch-level pictures diverge sharply -- for example, at S2, LightGBM reaches LOO $=0.520$ but LOBO $=-0.911$, and kernel ridge reaches LOO $=0.449$ but LOBO $=-0.559$ -- and no estimator at S2, S3, or S4 beats the Dummy baseline under LOBO.
+
+\begin{table}[H]
+\centering
+\caption{Family~4, 5-fold CV $R^2$ across the S1--S4 ladder. Models and tiers match Fig.~\ref{fig:fair}; PCA-OLS is not run at S1 (fewer than 6 features).}
+\label{tab:f4_5fold}
+\small
+\begin{tabular}{@{}lrrrr|rrrr@{}}
+\toprule
+& \multicolumn{4}{c|}{YS} & \multicolumn{4}{c}{HV} \\
+Model & S1 & S2 & S3 & S4 & S1 & S2 & S3 & S4 \\
+\midrule
+Ridge            & 0.384  & 0.695 & 0.653 & 0.646 & $-0.085$ & $-0.187$ & $-0.071$ & $-0.134$ \\
+Bayesian ridge   & 0.409  & 0.685 & 0.652 & 0.665 & $-0.111$ & $-0.192$ & $-0.076$ & $-0.222$ \\
+OLS              & 0.412  & 0.688 & 0.649 & 0.561 & $-0.149$ & $-0.384$ & $-0.172$ & $-0.364$ \\
+PCA-OLS          & n/a    & 0.632 & 0.438 & 0.588 & n/a      & $-0.086$ & $-0.496$ & $-0.317$ \\
+ElasticNet       & 0.204  & 0.657 & 0.377 & 0.190 & 0.005    & $-0.112$ & $-0.109$ & $-0.248$ \\
+Kernel ridge     & 0.382  & 0.695 & 0.646 & 0.650 & 0.228    & 0.025    & 0.335    & 0.214 \\
+Stacking         & 0.306  & 0.611 & 0.616 & 0.586 & $-0.024$ & $-0.347$ & $-0.310$ & $-0.399$ \\
+NNR              & $-0.867$ & 0.661 & 0.626 & 0.687 & $-0.315$ & 0.111 & 0.364 & $-0.133$ \\
+Extra trees      & 0.330  & 0.638 & 0.617 & 0.600 & 0.184    & $-0.327$ & $-0.079$ & $-0.133$ \\
+LightGBM         & 0.314  & 0.514 & 0.512 & 0.552 & 0.061    & $-0.015$ & 0.062    & 0.037 \\
+Random forest    & 0.328  & 0.588 & 0.562 & 0.554 & 0.156    & $-0.147$ & $-0.151$ & $-0.201$ \\
+GPR              & 0.323  & 0.612 & 0.578 & 0.582 & 0.059    & $-0.034$ & 0.079    & $-0.032$ \\
+XGBoost          & 0.219  & 0.564 & 0.571 & 0.596 & $-0.206$ & $-0.065$ & $-0.180$ & $-0.140$ \\
+Gradient boosting& 0.370  & 0.575 & 0.562 & 0.564 & 0.202    & $-0.196$ & $-0.286$ & $-0.279$ \\
+SVR              & 0.184  & 0.325 & 0.364 & 0.610 & $-2.828$ & $-0.203$ & $-2.205$ & $-0.100$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Family~4, LOO $R^2$ across the S1--S4 ladder. Models and tiers match Fig.~\ref{fig:fair}; PCA-OLS is not run at S1 (fewer than 6 features).}
+\label{tab:f4_loo}
+\small
+\begin{tabular}{@{}lrrrr|rrrr@{}}
+\toprule
+& \multicolumn{4}{c|}{YS} & \multicolumn{4}{c}{HV} \\
+Model & S1 & S2 & S3 & S4 & S1 & S2 & S3 & S4 \\
+\midrule
+Ridge            & 0.451  & 0.662 & 0.601 & 0.599 & 0.242 & 0.147 & 0.258 & 0.231 \\
+Bayesian ridge   & 0.447  & 0.666 & 0.620 & 0.612 & 0.245 & 0.199 & 0.254 & 0.225 \\
+OLS              & 0.451  & 0.672 & 0.622 & 0.531 & 0.232 & 0.139 & 0.229 & 0.176 \\
+PCA-OLS          & n/a    & 0.604 & 0.480 & 0.540 & n/a   & 0.108 & $-0.070$ & $-0.032$ \\
+ElasticNet       & 0.446  & 0.369 & 0.087 & 0.023 & 0.158 & 0.026 & 0.040 & 0.100 \\
+Kernel ridge     & 0.411  & 0.660 & 0.608 & 0.601 & 0.466 & 0.449 & 0.506 & 0.399 \\
+Stacking         & 0.290  & 0.604 & 0.592 & 0.578 & 0.213 & $-0.147$ & $-0.165$ & $-0.234$ \\
+NNR              & $-1.609$ & 0.650 & 0.563 & 0.518 & 0.233 & 0.422 & 0.363 & 0.194 \\
+Extra trees      & 0.351  & 0.599 & 0.576 & 0.543 & 0.345 & 0.336 & 0.367 & 0.298 \\
+LightGBM         & 0.271  & 0.565 & 0.566 & 0.560 & 0.217 & 0.520 & 0.457 & 0.432 \\
+Random forest    & 0.274  & 0.563 & 0.547 & 0.554 & 0.309 & 0.276 & 0.269 & 0.280 \\
+GPR              & 0.311  & 0.617 & 0.534 & 0.545 & 0.239 & 0.337 & 0.286 & 0.199 \\
+XGBoost          & 0.220  & 0.561 & 0.532 & 0.493 & 0.011 & 0.405 & 0.367 & 0.284 \\
+Gradient boosting& 0.279  & 0.568 & 0.522 & 0.504 & 0.308 & 0.280 & 0.367 & 0.421 \\
+SVR              & 0.217  & 0.567 & 0.460 & 0.509 & $-0.554$ & $-0.072$ & $-0.088$ & $-0.163$ \\
 \bottomrule
 \end{tabular}
 \end{table}

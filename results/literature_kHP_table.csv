@@ -1,13 +1,12 @@
-System,k_HP_MPa_um_half,Citation,Note
-CoCrFeMnNi (Otto 2013),494.0,Otto2013,"tension, RT, fine-grained set"
-CoCrFeMnNi (Yoshida 2017),538.0,Yoshida2017,"wide GS range, 296 K"
-CoCrFeMnNi (Schneider 2020),680.0,Schneider2020,wider GS sweep
-CoCrNi (Sun 2018),265.0,Sun2018,"medium-entropy, tension"
-Al0.3CoCrFeNi (LaRosa 2019),824.0,LaRosa2019,Al-bearing FCC HEA
-Pure Cu (avg),110.0,Hall1951,baseline pure FCC
-Pure Al (avg),150.0,Petch1953,baseline pure FCC
-Pure Ni (avg),210.0,George2019,baseline pure FCC
-This work — M3,766.0,this_work,"93 FCC HEAs, all 7 non-Ni elements"
-This work — SISSO Full,,this_work,implied 9356/dS_mix term; not directly comparable
-This work — SISSO Robust,,this_work,implied 9837/dS_mix term
-This work — PySR compact YS,,this_work,implied via 4.29*dH_mix*SD_grain/d^2 product
+Alloy,k_HP_MPa_um_half,d_min_um,d_max_um,test_mode,Citation,Provenance
+CoCrNi,265,0.29,111.0,tension,Yoshida2017,primary
+CoCrFeNi,276,0.55,32.2,tension,Yoshida2019acta,primary
+CoCrFeMnNi,494,4.4,155.0,tension,Otto2013,primary
+CoCrFeNi,506,25.0,110.0,tension,LiKHP2024,primary
+CoCrFeNi,684,23.0,150.0,tension,Jagetia2021,primary
+"This work, Family 3 M3",766,14.7,212.0,tension,this_work,fitted
+CoCrFeNi,855,2.5,59.0,tension,WuGaoBei2016,compiled
+CrFeNi,966,10.0,327.0,compression,SchneiderCrFeNi2021,primary
+Al0.3CoCrFeNi,1014,29.0,199.0,tension,Jagetia2021,primary
+Co0.95Cr0.8Fe0.25Ni1.8Mo0.475,1100,25.0,110.0,tension,LiKHP2024,primary
+Al0.3CoFeNi,1244,38.0,179.0,tension,Jagetia2021,primary

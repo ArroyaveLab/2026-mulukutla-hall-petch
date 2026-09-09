@@ -11,9 +11,61 @@ ROOT = HERE.parent.parent
 RESULTS = ROOT / "results"
 
 
+# Canonical manuscript source. paper/*.tex in this repo are copies of these.
+OVERLEAF = Path.home() / "Dropbox/apps/Overleaf/Revisiting_Hall_Petch"
+OVERLEAF_PAIRS = [("main.tex", "main3.tex"),
+                  ("supplementary.tex", "supplemental2.tex"),
+                  ("references.bib", "references.bib")]
+
+
 def assert_in_order(text, markers):
     positions = [text.index(marker) for marker in markers]
     assert positions == sorted(positions)
+
+
+def check_paper_in_sync():
+    """paper/ must match the Overleaf source it was copied from.
+
+    Skipped when Overleaf is not mounted (CI, a fresh clone, another machine).
+    A stale in-repo paper that contradicts the submitted manuscript is the
+    failure this guards against.
+    """
+    if not OVERLEAF.is_dir():
+        print("  paper sync:  SKIP (Overleaf not mounted here)")
+        return
+    drifted = [
+        repo_name for repo_name, canonical_name in OVERLEAF_PAIRS
+        if (ROOT / "paper" / repo_name).read_bytes()
+        != (OVERLEAF / canonical_name).read_bytes()
+    ]
+    assert not drifted, (
+        f"paper/ has drifted from Overleaf: {', '.join(drifted)}. "
+        f"Re-copy from {OVERLEAF} before committing."
+    )
+    print("  paper sync:  OK (matches Overleaf)")
+
+
+def check_literature_table(manuscript, supplement):
+    """SI Table S12 admits only coefficients fitted to a measured yield strength.
+
+    Hardness-derived coefficients are excluded because the HV-to-strength
+    conversion depends on the work-hardening response, not on a fixed factor.
+    """
+    lit = pd.read_csv(RESULTS / "literature_kHP_table.csv")
+    assert not lit["test_mode"].str.contains("hardness", case=False).any(), \
+        "hardness-derived coefficient leaked into the literature k_HP table"
+    reported = lit[lit["Citation"] != "this_work"]["k_HP_MPa_um_half"]
+    lo, hi = int(reported.min()), int(reported.max())
+    claim = f"span {lo} to {hi}~MPa"
+    assert claim in manuscript, (
+        f"manuscript must state the literature range as '{claim}'; "
+        f"the table gives {lo}-{hi}"
+    )
+    m3 = lit[lit["Citation"] == "this_work"]["k_HP_MPa_um_half"].iloc[0]
+    assert lo < m3 < hi, "M3 must lie inside the reported range"
+    assert "Pure Cu" not in supplement and "Pure Ni" not in supplement, \
+        "pure-metal survey rows pool indentation with tensile data; keep them out"
+    print(f"  literature:  OK ({lo}-{hi}, M3={m3} inside, no hardness rows)")
 
 
 def main():
@@ -80,7 +132,7 @@ def main():
         r"\newcommand{\familyone}{Classical Hall-Petch}",
         r"\newcommand{\familytwo}{Physics-derived descriptors}",
         r"\newcommand{\familythree}{Composition/processing}",
-        r"\newcommand{\familyfour}{Non-linear ML (ARMOTE-CV)}",
+        r"\newcommand{\familyfour}{Non-linear estimators}",
         r"\newcommand{\familyfive}{Symbolic regression}",
     ]
     family_headings = [
@@ -109,6 +161,9 @@ def main():
     assert "Tier~1" not in manuscript + supplement
     assert "descriptor-rich tiers" not in manuscript + supplement
     assert "PySR used F1" not in supplement
+
+    check_literature_table(manuscript, supplement)
+    check_paper_in_sync()
     print("Revision validation passed.")
 
 
