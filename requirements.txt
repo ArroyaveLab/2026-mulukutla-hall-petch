@@ -38,6 +38,12 @@ python-docx>=1.1
 # Excel input
 openpyxl>=3.1
 
+# Model serialisation — loading results/*.pkl and the ARMOTE-CV artifacts
+joblib>=1.3
+
+# Symbolic regression support
+sympy>=1.12
+
 # Testing (regression checks on canonical numbers)
 pytest>=7.4
 
@@ -48,3 +54,11 @@ nbstripout>=0.7
 
 # Bibliography validation (optional, only used by paper authors)
 # bib-check-cli  # available via pipx from ~/tools/bib-check
+
+# ---------------------------------------------------------------------------
+# Optional — only needed to RE-RUN a stage, not to reproduce the reported
+# numbers. `make test` and `make verify` do not import any of these.
+# ---------------------------------------------------------------------------
+# torch>=2.1        # SISSO (scripts/05_family5_symbolic_regression/sisso_analysis*.py)
+# tqdm>=4.66        # progress bars in the ARMOTE-CV generator
+# tensorflow>=2.15  # NNR estimator in the ARMOTE-CV generator only
