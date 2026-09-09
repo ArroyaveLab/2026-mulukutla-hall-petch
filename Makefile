@@ -1,4 +1,4 @@
-# Physics_informed_ML_Hall_Petch_2 — staged reproduction
+# 2026-mulukutla-hall-petch — staged reproduction
 # `make help` lists every target. Stage order matches docs/reproducing.md.
 
 PY    := python

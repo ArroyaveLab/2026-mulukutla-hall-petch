@@ -42,7 +42,7 @@ keywords:
   - hardness
 preferred-citation:
   type: article
-  title: "Revisiting Hall-Petch strengthening in FCC multi-principal element alloys: Best practices for building and auditing machine learning strength models"
+  title: "Revisiting Hall-Petch strengthening in FCC multi-principal element alloys: what grain size, composition, and processing can and cannot explain"
   authors:
     - family-names: Mulukutla
       given-names: Mrinalini

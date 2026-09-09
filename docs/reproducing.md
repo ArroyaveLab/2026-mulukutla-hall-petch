@@ -42,14 +42,20 @@ comparison, the tiered literature stress test, the Tabor analysis, and the
 dataset audit. `make test` recomputes these from `data/derived` and asserts
 them against the values printed in the paper.
 
-**Archival.** Three analyses are reported as archival rather than
-confirmatory, because the artifacts needed to reproduce them were not
-retained:
+**Verified from stored artifacts.** The nested ARMOTE-CV panel is not re-run,
+but it is checked. Its generator stores one Optuna study, one selected
+parameter set, and one pair of feature and target scalers per fold. Across the
+six LOBO folds the four Bayesian-ridge hyperparameters take six distinct
+values, and each scaler is fitted on its training split alone. Reloading those
+objects and predicting each held-out batch reproduces all six fold scores
+exactly and gives a pooled LOBO Q² of 0.613 with RMSE 50.5 MPa. The manuscript
+therefore reports the nesting as verified, not assumed.
+
+**Archival.** Two analyses are reported as archival, because the artifacts
+needed to reproduce them were not retained:
 
 - **Bayesian PSIS-LOO stacking weights.** The PyMC posterior draws are gone.
   The frequentist information criteria for the same models are recomputed.
-- **Nested ARMOTE-CV panel.** Per-fold models and Optuna studies are archived
-  separately (~1.5 GB). The manuscript uses it as secondary evidence only.
 - **Outer-loop PySR performance.** Equation structures were selected after
   viewing complete-data search fronts, so the reported scores are
   post-selection fixed-form CV, not unbiased symbolic-discovery estimates.
