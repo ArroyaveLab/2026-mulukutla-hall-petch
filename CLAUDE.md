@@ -1,4 +1,4 @@
-# Agent instructions for `Physics_informed_ML_Hall_Petch_2`
+# Agent instructions for `2026-mulukutla-hall-petch`
 
 Read this before changing anything. It records the project state, the
 conventions, and the traps. `README.md` covers navigation;
@@ -12,7 +12,13 @@ conditions in Al–Co–Cr–Cu–Fe–Mn–Ni–V (93 with YS, 94 with HV).
 
 Four artifacts must stay consistent with each other and with `results/`:
 
-- **Paper** — `paper/main.tex` + `paper/supplementary.tex` (canonical narrative)
+- **Paper** — `paper/main.tex` + `paper/supplementary.tex`. **These are copies.**
+  The canonical source is Overleaf, at
+  `~/Dropbox/apps/Overleaf/Revisiting_Hall_Petch/main3.tex` and
+  `supplemental2.tex` (note the different filenames). Edit there, then
+  re-copy. A stale in-repo paper that contradicts the submitted manuscript is
+  the single easiest way to embarrass this project in front of a referee —
+  `make verify` checks the two are in sync.
 - **Report** — `report/Comprehensive_Analysis_Report.docx`, regenerated from
   live results by `report/generate_report.py`
 - **Notebook** — `notebook/Hall_Petch_MPEA_Analysis.ipynb` (generated; edit the
@@ -75,9 +81,10 @@ which is what shows the gain comes from the interaction and not from measuring
 grain width. Do not delete it from the analysis even though the figure shows
 only M15.
 
-**Family 4** — Lasso S2 0.683 / 0.674 / 0.621; LightGBM S2 0.632 / 0.574 /
-0.615. Bootstrap intervals overlap, so there is no evidence non-linearity
-helps at matched inputs.
+**Family 4** — fixed-settings panel: Lasso S2 0.683 / 0.674 / 0.621;
+LightGBM S2 0.632 / 0.574 / 0.615. Bootstrap intervals overlap, so there is no
+evidence non-linearity helps at matched inputs. Nested ARMOTE-CV panel:
+Bayesian ridge S2 0.685 / 0.666 / 0.613 (see §7 — verified, not archival).
 
 **Family 5** — HV fixed form 0.725 / 0.727 / 0.636 after fold-wise constant
 refitting, post-selected structure.
@@ -118,6 +125,23 @@ contains `SD_grain/√|ΔS_mix − 8.2739|`. The internal minimum is 8.3637, onl
 0.0898 above the pole. The protected square root keeps it real, so it diverges
 silently rather than erroring.
 
+**Hardness does not convert to yield strength.** Tabor's relation assumes a
+rigid-plastic, non-hardening solid; indentation samples flow stress at a
+representative strain, not the offset yield point. The ratio therefore carries
+the work-hardening response, and this dataset measures it as
+C_eff = HV/σ_y = 5.13 ± 1.36, not 3. Treat HV and YS as separate targets with
+separate models and separate validation. Two consequences to preserve:
+
+- `results/literature_kHP_table.csv` (SI Table S12) admits only coefficients
+  fitted to a *measured* yield strength. `literature_kHP_table.py` asserts
+  this. In particular no pure metal appears, because the standard survey
+  values pool Vickers and nanoindentation hardness divided by a Tabor factor
+  of 3 with tension and compression data in one fit.
+- The 25 E3 literature points are HV proxies converted with C_eff inferred
+  from *this* dataset. They are model-derived evidence, never independent
+  external measurements, and are never pooled with E1 to inflate the external
+  count.
+
 **Do not edit the `.ipynb`.** Edit `notebook/_generate_notebook.py` and re-run.
 
 ## 5. Figure conventions
@@ -146,7 +170,7 @@ exempt.
 | any analysis script | `make test` | 18 passed |
 | a figure script | that script, then `make paper` | 0 errors |
 | the notebook generator | `make notebook` | "Total cells" printed |
-| the paper | `make paper` | main 21 pp., supplementary 23 pp., 0 undefined |
+| the paper | `make paper` | main 16 pp., supplementary 26 pp., 0 undefined |
 | results feeding the report | `make report` | "Report saved" |
 | anything at all | `make verify` | no drift reported |
 
@@ -159,10 +183,17 @@ The manuscript separates these deliberately, and so should you:
 - **Reproducible here** — the M-model hierarchy including M15, Family 1
   baselines, fold-contained PCA-OLS, matched-input Family 4, the literature
   stress test, Tabor, the dataset audit.
-- **Archival** — Bayesian PSIS-LOO stacking weights (PyMC draws not retained),
-  the nested ARMOTE-CV panel (per-fold objects archived separately), and
-  outer-loop PySR performance (structures were selected on complete-data
-  fronts). Report these as archival, never as confirmatory.
+- **Verified from stored artifacts** — the nested ARMOTE-CV panel. Its
+  generator stores one Optuna study, one selected parameter set, and one pair
+  of feature and target scalers per fold. Across the six LOBO folds the four
+  Bayesian-ridge hyperparameters take six distinct values, and the scalers are
+  fitted on each training split alone. Reloading those objects and predicting
+  each held-out batch reproduces the six fold scores exactly and gives a pooled
+  LOBO Q² of 0.613 with RMSE 50.5 MPa. The manuscript therefore reports the
+  nesting as verified, not assumed — do not downgrade it to archival.
+- **Archival** — Bayesian PSIS-LOO stacking weights (PyMC draws not retained)
+  and outer-loop PySR performance (structures were selected on complete-data
+  fronts). Report these as archival.
 
 ## 8. When in doubt
 
