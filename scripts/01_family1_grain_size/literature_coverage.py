@@ -109,3 +109,45 @@ print(f"  ratio, grain size + YS          : "
 
 assert lit4['compositions'] < OURS_ALL_FOUR_CMP, \
     "Introduction claims this is the largest such set; the compilation now says otherwise"
+
+# ---------------------------------------------------------------------------
+# C_eff in the published records, for the hardness discussion.
+#
+# Tabor's relation would put HV(MPa)/sigma_y at 3. The indentation samples a
+# flow stress at roughly 8 % plastic strain, so in an alloy with work-hardening
+# capacity the ratio has to come out higher, and how much higher depends on how
+# much capacity is left. Both subsets below are reported because they answer
+# different questions and give different numbers:
+#
+#   - with grain size: the population of SI Table S13, and the one quoted for
+#     the narrow range in the Discussion
+#   - without: a wider set, mostly compression tests, that shows the spread the
+#     mechanism predicts. The low end is heavily deformed material already near
+#     saturation, which is the regime where Tabor's factor is expected to hold
+#     (Figueiredo et al. 2023); the high end is soft, strongly hardening alloys.
+#
+# Pooling across studies inherits the comparability problem this paper argues
+# about, so ranges are quoted rather than means.
+# ---------------------------------------------------------------------------
+def ceff_of(mask):
+    s = df[mask]
+    return (s[HV] * 9.807 / s[YS]).sort_values()
+
+narrow = ceff_of(fcc & df[GRAIN].notna() & df[YS].notna() & df[HV].notna())
+wide   = ceff_of(fcc & df[YS].notna() & df[HV].notna())
+
+print(f"\nC_eff = HV(MPa)/sigma_y in published FCC records")
+print(f"  with grain size (n={len(narrow):2d}): {narrow.min():5.2f} to {narrow.max():5.2f}"
+      f"   mean {narrow.mean():.2f}")
+print(f"  any            (n={len(wide):2d}): {wide.min():5.2f} to {wide.max():5.2f}"
+      f"   mean {wide.mean():.2f}")
+print(f"  this work           : 5.13 +/- 1.36 (n=93, one protocol)")
+print(f"  Tabor               : 3")
+print(f"  records within 2.7-3.3 of Tabor: "
+      f"{int(((wide >= 2.7) & (wide <= 3.3)).sum())}/{len(wide)}")
+
+# The Discussion quotes both ranges; keep them honest.
+assert round(narrow.min(), 1) == 4.2 and round(narrow.max(), 1) == 6.3, \
+    f"Discussion quotes 4.2-6.3 for the grain-size subset; now {narrow.min():.2f}-{narrow.max():.2f}"
+assert round(wide.min(), 1) == 3.2 and round(wide.max(), 1) == 17.6, \
+    f"Discussion quotes 3.2-17.6 for the wider set; now {wide.min():.2f}-{wide.max():.2f}"
