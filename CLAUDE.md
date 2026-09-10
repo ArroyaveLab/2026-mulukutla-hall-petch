@@ -192,6 +192,24 @@ be **zero** in `paper/main.log`. They are today. A few `Underfull` warnings are
 loose inter-word spacing and are cosmetic. Note the shell aliases `grep` to
 `ugrep`, whose `-c` prints nothing here — count with Python, not `grep -c`.
 
+**Never build in the Overleaf folder.** `~/Dropbox/apps/Overleaf/Revisiting_Hall_Petch`
+is synced against a live Overleaf project that co-authors edit. Every
+`pdflatex` run there writes `.aux/.log/.out/.bbl` against names Overleaf also
+writes, and Dropbox resolves the collision by forking a "conflicted copy" —
+that is where six of them came from in one session. Copy the sources to a
+scratch directory, build there, and copy only the PDFs back.
+
+**Clean up after every successful compile**, wherever it ran:
+
+```bash
+find . -maxdepth 1 -type f \( -name "*.aux" -o -name "*.log" -o -name "*.out" \
+  -o -name "*.bbl" -o -name "*.blg" -o -name "*.toc" -o -name "*.synctex.gz" \
+  -o -name "*.fls" -o -name "*.fdb_latexmk" -o -name "*.spl" \) -delete
+```
+
+Use `find`, not a glob: zsh aborts the whole command when a pattern like
+`*.synctex.gz` matches nothing.
+
 ## 5. Figure conventions
 
 `scripts/_figstyle.py` is the single source of truth for colour and type.
