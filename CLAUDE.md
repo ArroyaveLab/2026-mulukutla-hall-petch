@@ -57,6 +57,24 @@ and investigate before editing the paper.
 - *d* 14.66–211.75 µm, SD_grain 8.32–321.06 µm, YS 151.5–544.5 MPa, HV 57.6–227.5
 - *r*(*d*, SD_grain) = 0.801
 
+**Batch codes.** `data/raw` stores these in a column named `Iteration`; the
+paper calls them batches, because LOBO is defined over them. The code is three
+letters: **the first two name the design campaign, the third the batch within
+it.** AA, BB and CB are the first, second and third BIRDSHOT campaigns.
+
+| Campaign | Batches | In this dataset |
+|---|---|---|
+| AA | AAA–AAE | no — different processing route, see `Hastings2025FCC` |
+| BB | BBA, BBB, BBC | yes, 35 candidates (34 with YS) |
+| CB | CBA, CBB, CBC | yes, 59 candidates |
+
+Two codes in the HTMDEC Drive are **not** part of this study and should not be
+reintroduced: `BAA`, a processing route that was discontinued, and `BZZ`/`ZZZ`.
+Note the second letter is not an echo of the first — it is CB, never CC — so a
+find-and-replace that doubles single letters will produce the wrong code. Both
+documents were single-lettered in places until 2026-09-10; if you see "the B
+campaign" or "Campaign C" anywhere, it is stale.
+
 **Family 1** — YS 0.405 / 0.406 / 0.373 (5-fold / LOO / LOBO);
 HV 0.086 / 0.136 / −0.077. Five two-parameter laws inside ΔBIC < 2.
 
