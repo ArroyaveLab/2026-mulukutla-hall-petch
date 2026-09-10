@@ -383,18 +383,18 @@ def load_citrine_mpea():
     print("\n--- Loading Citrine/Borg MPEA Dataset ---")
     url = 'https://raw.githubusercontent.com/CitrineInformatics/MPEA_dataset/master/MPEA_dataset.csv'
 
+    # Vendored copy first: upstream can change, and a result that moves when
+    # someone else's repository is edited is not reproducible.
+    local_path = f'{DATA_DIR}/citrine_mpea_dataset.csv'
     try:
-        df = pd.read_csv(url)
-        print(f"  Downloaded {len(df)} entries")
-    except Exception as e:
-        print(f"  WARNING: Could not download Citrine data: {e}")
-        print("  Attempting local fallback...")
-        local_path = f'{DATA_DIR}/citrine_mpea_dataset.csv'
+        df = pd.read_csv(local_path)
+        print(f"  Loaded {len(df)} entries from vendored copy")
+    except FileNotFoundError:
         try:
-            df = pd.read_csv(local_path)
-            print(f"  Loaded {len(df)} entries from local cache")
-        except FileNotFoundError:
-            print("  No local cache found. Skipping Citrine data.")
+            df = pd.read_csv(url)
+            print(f"  Downloaded {len(df)} entries (no vendored copy found)")
+        except Exception as e:
+            print(f"  WARNING: Could not obtain Citrine data: {e}")
             return pd.DataFrame()
 
     # Identify relevant columns (handle LaTeX-formatted names)
@@ -402,6 +402,11 @@ def load_citrine_mpea():
     ys_col = [c for c in df.columns if 'YS' in c and 'MPa' in c]
     gs_col = [c for c in df.columns if 'grain' in c.lower() and ('m)' in c or 'µm' in c or 'um' in c.lower())]
     formula_col = [c for c in df.columns if 'formula' in c.lower() or 'FORMULA' in c]
+    # Hardness, where the compilation reports it. Carried through as a measured
+    # value; it is never converted to a strength. Earlier versions of this
+    # loader ignored the column outright, which silently discarded the only
+    # records in E1 that report both properties on the same material.
+    hv_col = [c for c in df.columns if c.strip().upper().endswith('HV')]
 
     if not formula_col:
         formula_col = [c for c in df.columns if 'composition' in c.lower()]
@@ -454,6 +459,10 @@ def load_citrine_mpea():
             'test_mode': 'mixed',
             'data_quality': 'aggregated',
         }
+        if hv_col:
+            hv = pd.to_numeric(row[hv_col[0]], errors='coerce')
+            if pd.notna(hv) and hv > 0:
+                record['HV_exp'] = hv
         for el in ELEMENTS:
             record[f'{el}_frac'] = fracs[el]
         records.append(record)
