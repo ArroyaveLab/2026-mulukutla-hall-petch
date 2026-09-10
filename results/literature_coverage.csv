@@ -1,0 +1,4 @@
+set,records,compositions,source_studies,largest_single_study_compositions,largest_single_study_doi
+"FCC, grain size + yield strength",91,27,25,7,10.1016/j.actamat.2014.08.026
+"FCC, grain size + yield strength + hardness",8,6,3,3,10.1016/j.msea.2019.138181
+"This work (single study, one protocol)",93,81,1,81,this_work
