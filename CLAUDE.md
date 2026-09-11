@@ -222,9 +222,19 @@ anything in the submission, edit the Overleaf source and re-run the script.
 Never hand-edit a file in the submission folder; the next build discards it.
 
 ```bash
-python3 scripts/make_submission.py           # build + verify
+python3 scripts/make_submission.py           # build + verify + refresh paper/
 python3 scripts/make_submission.py --check   # drift check, writes nothing
 ```
+
+**This is the single propagation step after any edit to main3.tex.** It emits
+two different artifacts from the same source, and they are not
+interchangeable:
+
+- the **review format** (single column, 1.5 spacing, numbered lines, 53 pp.)
+  goes to the submission folder and to the publisher
+- the **two-column format** (17 pp.) is the readable one, and is what `paper/`
+  in this repository carries and what the `ArroyaveLab/publications` index
+  links to
 
 What the build does, and why each step exists:
 
@@ -279,7 +289,7 @@ exempt.
 | any analysis script | `make test` | 18 passed |
 | a figure script | that script, then `make paper` | 0 errors |
 | the notebook generator | `make notebook` | "Total cells" printed |
-| the paper | `make paper` | main 16 pp., supplementary 26 pp., 0 undefined |
+| the paper | `python3 scripts/make_submission.py` | main 17 pp. two-column, supplementary 26 pp., 0 undefined |
 | results feeding the report | `make report` | "Report saved" |
 | anything at all | `make verify` | no drift reported |
 

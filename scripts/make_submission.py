@@ -51,6 +51,7 @@ from pathlib import Path
 OVERLEAF = Path.home() / "Dropbox/apps/Overleaf/Revisiting_Hall_Petch"
 FIGDIR = OVERLEAF / "figures"
 SUBMISSION = Path.home() / "Dropbox/TAMU/Submissions/2026_Mulukutla_HallPetch"
+REPO_PAPER = Path(__file__).resolve().parent.parent / "paper"
 
 MANUSCRIPT_PREAMBLE = r"""\documentclass[review,12pt]{elsarticle}
 
@@ -193,7 +194,55 @@ def emit(check_only=False):
             total += 1
     print(f"\n{SUBMISSION}")
     print(f"{total} figures copied flat, no subdirectory.")
-    return verify()
+    rc = verify()
+    return rc or build_repo_pdfs()
+
+
+def build_repo_pdfs():
+    """Compile the canonical two-column PDFs and refresh paper/ in the repo.
+
+    The submission package is the single-column review format, which is the
+    wrong artifact to browse or to link from the publications index. The
+    two-column build is the readable one, so it is what the repository and the
+    index carry. Built in scratch, never in the Overleaf folder.
+    """
+    print("\nBuilding the canonical two-column PDFs for the repository:")
+    with tempfile.TemporaryDirectory() as td:
+        work = Path(td)
+        for name in ("main3.tex", "supplemental2.tex", "references.bib"):
+            shutil.copy(OVERLEAF / name, work / name)
+        if FIGDIR.is_dir():
+            shutil.copytree(FIGDIR, work / "figures", dirs_exist_ok=True)
+        env = {**os.environ, "BIBINPUTS": f"{work}:"}
+        ok = True
+        for stem, out in (("main3", "main"), ("supplemental2", "supplementary")):
+            subprocess.run(["pdflatex", "-interaction=nonstopmode", f"{stem}.tex"],
+                           cwd=work, capture_output=True, env=env)
+            subprocess.run(["bibtex", stem], cwd=work, capture_output=True, env=env)
+            for _ in range(2):
+                subprocess.run(["pdflatex", "-interaction=nonstopmode", f"{stem}.tex"],
+                               cwd=work, capture_output=True, env=env)
+            log = (work / f"{stem}.log").read_text(errors="ignore").splitlines()
+            errs = [l for l in log if l.startswith("!")]
+            undef = [l for l in log if "undefined" in l.lower() and "warning" in l.lower()
+                     and "There were" not in l]
+            pages = next((re.search(r"\((\d+) pages", l).group(1) for l in log
+                          if "Output written" in l and re.search(r"\((\d+) pages", l)), "?")
+            status = "OK " if not (errs or undef) else "FAIL"
+            print(f"  {status} {out+'.pdf':20s} {pages:>3s} pages  "
+                  f"errors={len(errs)} undefined={len(undef)}")
+            for l in (errs + undef)[:3]:
+                print(f"        {l[:105]}")
+            ok = ok and not (errs or undef)
+            if (work / f"{stem}.pdf").exists():
+                shutil.copy(work / f"{stem}.pdf", REPO_PAPER / f"{out}.pdf")
+            shutil.copy(OVERLEAF / f"{stem}.tex", REPO_PAPER / f"{out}.tex")
+        shutil.copy(OVERLEAF / "references.bib", REPO_PAPER / "references.bib")
+    if not ok:
+        print("\nTwo-column build is NOT clean.")
+        return 1
+    print(f"\npaper/ refreshed in the repository (sources + two-column PDFs).")
+    return 0
 
 
 def verify():
