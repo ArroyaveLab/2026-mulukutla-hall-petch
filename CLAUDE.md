@@ -210,6 +210,49 @@ find . -maxdepth 1 -type f \( -name "*.aux" -o -name "*.log" -o -name "*.out" \
 Use `find`, not a glob: zsh aborts the whole command when a pattern like
 `*.synctex.gz` matches nothing.
 
+## 4b. Submission package
+
+`scripts/make_submission.py` builds the review-format package at
+`~/Dropbox/TAMU/Submissions/2026_Mulukutla_HallPetch`. That folder is
+**outside this repository on purpose** — it is derived, it duplicates every
+figure, and it ships to the publisher as a unit.
+
+**main3.tex and supplemental2.tex are the only sources of truth.** To change
+anything in the submission, edit the Overleaf source and re-run the script.
+Never hand-edit a file in the submission folder; the next build discards it.
+
+```bash
+python3 scripts/make_submission.py           # build + verify
+python3 scripts/make_submission.py --check   # drift check, writes nothing
+```
+
+What the build does, and why each step exists:
+
+- **Review format.** elsarticle's `review` option gives a single column at 1.5
+  spacing but does *not* number lines — the class never loads `lineno`, so the
+  script adds it. The supplement gets line numbers too; reviewers cite them.
+- **Bibliography inlined.** The `.bbl` is spliced in as a `thebibliography`
+  environment replacing `\bibliography{references}`, so the package needs no
+  `.bib` and no bibtex pass.
+- **Figures flattened.** `\graphicspath` is dropped and figures are renamed
+  `fig<N>_<desc>.png` / `figS<N>_<desc>.png` in order of first appearance,
+  living beside the `.tex` with no subdirectory.
+- **Verified in isolation.** The emitted package is copied to an empty
+  directory and compiled with pdflatex alone. Any undefined reference fails
+  the build.
+
+That last check exists because of a real failure. `\ref` across the two
+documents resolves fine while they share an Overleaf project and silently
+becomes `??` once they compile separately — the manuscript referenced
+`tab:khplit` (in the SI) and the SI referenced `fig:fair` (in the manuscript).
+Cross-document references must be written out literally ("Table S12 of the
+Supplementary Information", "Fig. 8 of the main text"). Note also that grepping
+a LaTeX log for `Citation.*undefined` will **not** catch these; they are
+`Reference ... undefined`.
+
+Anything else already in the submission folder is left alone — the script only
+writes files it generates.
+
 ## 5. Figure conventions
 
 `scripts/_figstyle.py` is the single source of truth for colour and type.
