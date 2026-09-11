@@ -1,0 +1,34 @@
+{
+  "title": "Revisiting Hall-Petch strengthening in FCC multi-principal element alloys: data and analysis pipeline",
+  "description": "<p>Dataset and complete analysis pipeline for the manuscript <em>Revisiting Hall-Petch strengthening in FCC multi-principal element alloys: what grain size, composition, and processing can and cannot explain</em>.</p><p>Contains 94 single-phase FCC alloy conditions spanning 82 compositions in the Al-Co-Cr-Cu-Fe-Mn-Ni-V system, produced and characterized under one processing route. Eighty-one compositions carry chemistry, grain size, yield strength and Vickers hardness together.</p><p>The repository holds the raw dataset, the five-family modelling hierarchy (classical Hall-Petch, physics-derived descriptors, composition and processing, non-linear estimators, symbolic regression), the 5-fold / leave-one-out / leave-one-batch-out validation protocol, the tiered literature stress test, and regression tests that recompute every headline value from the raw data and fail if the manuscript drifts from it.</p>",
+  "upload_type": "software",
+  "license": "mit",
+  "access_right": "open",
+  "creators": [
+    { "name": "Mulukutla, Mrinalini", "affiliation": "Texas A&M University" },
+    { "name": "Padhy, Shakti Prasad", "affiliation": "Texas A&M University" },
+    { "name": "Xu, Wenle", "affiliation": "Texas A&M University" },
+    { "name": "Sahu, Bibhu Prasad", "affiliation": "Texas A&M University" },
+    { "name": "Kundu, Joydeep", "affiliation": "Texas A&M University" },
+    { "name": "Shunmugasamy, Vasanth C.", "affiliation": "Texas A&M University" },
+    { "name": "Allaire, Douglas", "affiliation": "Texas A&M University" },
+    { "name": "Karaman, Ibrahim", "affiliation": "Texas A&M University" },
+    { "name": "Arroyave, Raymundo", "affiliation": "Texas A&M University" }
+  ],
+  "keywords": [
+    "multi-principal element alloys",
+    "high-entropy alloys",
+    "Hall-Petch",
+    "grain boundary strengthening",
+    "yield strength",
+    "Vickers hardness",
+    "machine learning",
+    "symbolic regression",
+    "grouped cross-validation",
+    "Bayesian optimization"
+  ],
+  "grants": [
+    { "id": "10.13039/100006754::W911NF-22-2-0106" }
+  ],
+  "notes": "Sponsored by the Army Research Laboratory under Cooperative Agreement W911NF-22-2-0106. The views and conclusions are those of the authors and should not be interpreted as official policies of the Army Research Laboratory or the US Government."
+}
