@@ -5,15 +5,42 @@
   "license": "mit",
   "access_right": "open",
   "creators": [
-    { "name": "Mulukutla, Mrinalini", "affiliation": "Texas A&M University" },
-    { "name": "Padhy, Shakti Prasad", "affiliation": "Texas A&M University" },
-    { "name": "Xu, Wenle", "affiliation": "Texas A&M University" },
-    { "name": "Sahu, Bibhu Prasad", "affiliation": "Texas A&M University" },
-    { "name": "Kundu, Joydeep", "affiliation": "Texas A&M University" },
-    { "name": "Shunmugasamy, Vasanth C.", "affiliation": "Texas A&M University" },
-    { "name": "Allaire, Douglas", "affiliation": "Texas A&M University" },
-    { "name": "Karaman, Ibrahim", "affiliation": "Texas A&M University" },
-    { "name": "Arroyave, Raymundo", "affiliation": "Texas A&M University" }
+    {
+      "name": "Mulukutla, Mrinalini",
+      "affiliation": "Texas A&M University"
+    },
+    {
+      "name": "Padhy, Shakti Prasad",
+      "affiliation": "Texas A&M University"
+    },
+    {
+      "name": "Xu, Wenle",
+      "affiliation": "Texas A&M University"
+    },
+    {
+      "name": "Sahu, Bibhu Prasad",
+      "affiliation": "Texas A&M University"
+    },
+    {
+      "name": "Kundu, Joydeep",
+      "affiliation": "Texas A&M University"
+    },
+    {
+      "name": "Shunmugasamy, Vasanth C.",
+      "affiliation": "Texas A&M University"
+    },
+    {
+      "name": "Allaire, Douglas",
+      "affiliation": "Texas A&M University"
+    },
+    {
+      "name": "Karaman, Ibrahim",
+      "affiliation": "Texas A&M University"
+    },
+    {
+      "name": "Arroyave, Raymundo",
+      "affiliation": "Texas A&M University"
+    }
   ],
   "keywords": [
     "multi-principal element alloys",
@@ -26,9 +53,6 @@
     "symbolic regression",
     "grouped cross-validation",
     "Bayesian optimization"
-  ],
-  "grants": [
-    { "id": "10.13039/100006754::W911NF-22-2-0106" }
   ],
   "notes": "Sponsored by the Army Research Laboratory under Cooperative Agreement W911NF-22-2-0106. The views and conclusions are those of the authors and should not be interpreted as official policies of the Army Research Laboratory or the US Government."
 }
