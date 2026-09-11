@@ -263,6 +263,31 @@ a LaTeX log for `Citation.*undefined` will **not** catch these; they are
 Anything else already in the submission folder is left alone — the script only
 writes files it generates.
 
+### Release and DOI, at submission time
+
+The repository is public. The Zenodo archive is deliberately **not** created
+until submission, so the manuscript can cite a real DOI rather than a reserved
+placeholder. Zenodo only archives releases created *after* the webhook is
+enabled, and the concept DOI does not exist until the first release, so the
+order is fixed:
+
+1. **Enable the webhook** at zenodo.org → log in with GitHub → GitHub tab →
+   toggle `ArroyaveLab/2026-mulukutla-hall-petch` on. Archives nothing by
+   itself; safe to do at any time. Only the repository owner can do this.
+2. **Freeze the manuscript.**
+3. **Cut the release**: `gh release create v1.0.0 --title ... --notes ...`.
+   Zenodo mints a DOI within minutes.
+4. **Use the CONCEPT DOI**, not the version DOI. Zenodo issues both; the
+   concept DOI always resolves to the latest version and is the one to cite.
+5. Paste it into the data-availability statement in `main3.tex` and into
+   `CITATION.cff`, then **re-run the build** so the submission package carries
+   it.
+6. Submit.
+
+`make_submission.py` prints a warning whenever the data-availability statement
+contains no `10.5281/zenodo.*` DOI, so the package cannot quietly be handed
+over with step 5 skipped.
+
 ## 5. Figure conventions
 
 `scripts/_figstyle.py` is the single source of truth for colour and type.

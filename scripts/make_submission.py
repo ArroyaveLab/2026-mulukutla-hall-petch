@@ -158,6 +158,32 @@ def render(stem, out_stem, prefix):
     return transform(tex, bbl, renames, manuscript=(prefix == "fig")), renames
 
 
+def doi_status():
+    """Warn if the data-availability statement still has no archival DOI.
+
+    The Zenodo concept DOI only exists once the first GitHub release is cut, so
+    it cannot be written in advance. The intended order at submission time is:
+    enable the Zenodo webhook, cut the release, paste the concept DOI into
+    main3.tex and CITATION.cff, rebuild, then submit. This check exists so the
+    package cannot be handed over with that step skipped.
+    """
+    tex = (OVERLEAF / "main3.tex").read_text(errors="ignore")
+    avail = tex.split(r"\section*{Data and code availability}", 1)
+    if len(avail) < 2:
+        return
+    block = avail[1][:1200]
+    if re.search(r"10\.5281/zenodo\.\d+", block):
+        m = re.search(r"10\.5281/zenodo\.\d+", block)
+        print(f"\nArchival DOI present in the data-availability statement: {m.group(0)}")
+    else:
+        print("\n" + "-" * 72)
+        print("NOTE: the data-availability statement carries no Zenodo DOI yet.")
+        print("Before submitting: cut the GitHub release, wait for Zenodo to mint")
+        print("the DOI, put the CONCEPT DOI (not the version DOI) into main3.tex")
+        print("and CITATION.cff, then re-run this script.")
+        print("-" * 72)
+
+
 def emit(check_only=False):
     rendered = {out: render(src, out, pre) for src, out, pre in DOCS}
 
@@ -195,7 +221,9 @@ def emit(check_only=False):
     print(f"\n{SUBMISSION}")
     print(f"{total} figures copied flat, no subdirectory.")
     rc = verify()
-    return rc or build_repo_pdfs()
+    rc = rc or build_repo_pdfs()
+    doi_status()
+    return rc
 
 
 def build_repo_pdfs():
