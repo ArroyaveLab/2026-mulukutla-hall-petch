@@ -50,7 +50,7 @@ from pathlib import Path
 
 OVERLEAF = Path.home() / "Dropbox/apps/Overleaf/Revisiting_Hall_Petch"
 FIGDIR = OVERLEAF / "figures"
-SUBMISSION = Path.home() / "Dropbox/TAMU/Submissions/2026_Mulukutla_HallPetch"
+SUBMISSION = OVERLEAF / "submission"
 REPO_PAPER = Path(__file__).resolve().parent.parent / "paper"
 
 MANUSCRIPT_PREAMBLE = r"""\documentclass[review,12pt]{elsarticle}
@@ -222,8 +222,53 @@ def emit(check_only=False):
     print(f"{total} figures copied flat, no subdirectory.")
     rc = verify()
     rc = rc or build_repo_pdfs()
+    rc = rc or build_docx()
     doi_status()
     return rc
+
+
+def build_docx():
+    """Generate the Word versions, in review format, beside the .tex sources.
+
+    Uses the group's tex2docx tool rather than calling pandoc directly, so the
+    Times 11pt single-column reference document is applied consistently with
+    other manuscripts. Input is the submission .tex, which is already
+    self-contained -- flat figures, bibliography inlined -- so nothing has to be
+    resolved from elsewhere.
+
+    tex2docx cannot emit line numbers or line spacing, because Word carries
+    both as document properties rather than content; _docx_review_format adds
+    them afterwards.
+    """
+    tool = shutil.which("tex2docx-cli") or shutil.which("tex2docx")
+    if not tool:
+        print("\nSKIP: tex2docx not on PATH; .docx not regenerated.")
+        return 0
+    ref = Path.home() / "tools/tex2docx/reference_times11_single_justified.docx"
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import _docx_review_format
+
+    print("\nBuilding the Word versions (review format):")
+    with tempfile.TemporaryDirectory() as td:
+        work = Path(td)
+        for f in SUBMISSION.iterdir():
+            if f.is_file() and f.suffix.lower() in {".tex", ".png", ".jpg"}:
+                shutil.copy(f, work / f.name)
+        for stem in [d[1] for d in DOCS]:
+            cmd = [tool, f"{stem}.tex", "-o", f"{stem}.docx"]
+            if ref.exists():
+                cmd += ["--reference-doc", str(ref)]
+            r = subprocess.run(cmd, cwd=work, capture_output=True, text=True)
+            out = work / f"{stem}.docx"
+            if not out.exists():
+                print(f"  FAIL {stem}.docx  {r.stderr.strip()[:120]}")
+                return 1
+            applied = _docx_review_format.apply(out)
+            shutil.copy(out, SUBMISSION / f"{stem}.docx")
+            size = out.stat().st_size // 1024
+            print(f"  OK  {stem+'.docx':20s} {size:>5d} KB  "
+                  f"line numbers={applied['line_numbers']}  spacing={applied['spacing']}")
+    return 0
 
 
 def build_repo_pdfs():
